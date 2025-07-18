@@ -31,12 +31,12 @@ export const metadata: Metadata = {
 export default async function Manifesto() {
   return (
     <WaitlistWrapper>
-      <div className="flex flex-col gap-10">
-        <div className="text-white/80 [&>p]:tracking-tight [&>p]:leading-[1.6] [&>p:not(:last-child)]:mb-3 [&>h2]:text-white [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:mb-4 [&>h3]:text-white [&>h3]:text-lg [&>h3]:font-medium [&>h3]:mb-3 [&>ul]:ml-4 [&>ul]:space-y-2 [&>li]:list-disc text-pretty text-start">
+      <div className="flex flex-col gap-16">
+        <div className="text-white/80 [&>p]:tracking-tight [&>p]:leading-[1.6] [&>p:not(:last-child)]:mb-6 [&>h2]:text-white [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:mb-6 [&>h3]:text-white [&>h3]:text-lg [&>h3]:font-medium [&>h3]:mb-4 [&>ul]:ml-4 [&>ul]:space-y-3 [&>li]:list-disc [&_strong]:text-white [&_strong]:font-semibold text-pretty text-start">
           <RichText content={manifestoConfig.content} />
         </div>
-        <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-6 items-start">
             <p
               className={clsx(
                 "text-white text-4xl font-medium italic transform -rotate-12",
