@@ -92,7 +92,7 @@ export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
           {...props}
           value={value}
           className={clsx(
-            "flex-1 text-sm pl-4 pr-28 py-2 h-11 bg-zinc-800 cursor-text rounded-full text-white placeholder:text-zinc-500 border border-zinc-600 focus:border-zinc-400 focus:ring-2 focus:ring-zinc-400/20 outline-none transition-all",
+            "flex-1 text-sm pl-4 pr-28 py-2 h-11 bg-white/10 cursor-text rounded-full text-white placeholder:text-white/50 border border-white/20 focus:border-white/40 focus:ring-2 focus:ring-white/10 outline-none transition-all backdrop-blur-sm",
           )}
           disabled={inputDisabled}
           onChange={(e) => setValue(e.target.value)}
@@ -105,10 +105,10 @@ export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
           type="submit"
           disabled={inputDisabled}
           className={clsx(
-            "absolute h-8 px-3.5 bg-black text-white text-sm top-1/2 transform -translate-y-1/2 right-1.5 rounded-full font-medium flex gap-1 items-center hover:bg-zinc-800 hover:shadow-lg hover:shadow-white/10 transition-all",
-            "disabled:cursor-not-allowed disabled:bg-zinc-600",
+            "absolute h-8 px-3.5 bg-white text-black text-sm top-1/2 transform -translate-y-1/2 right-1.5 rounded-full font-medium flex gap-1 items-center hover:bg-white/90 transition-all",
+            "disabled:cursor-not-allowed disabled:bg-white/50",
             {
-              "bg-zinc-800": state === "loading",
+              "bg-white/80": state === "loading",
             },
           )}
         >

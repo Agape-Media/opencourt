@@ -7,18 +7,15 @@ export const Header = async () => {
 
   return (
     <div className="flex flex-col items-center justify-center">
-      <nav className="bg-slate-1 rounded-full">
+      <nav className="bg-black/40 backdrop-blur-xl rounded-full border border-white/10">
         <div
           className={clsx(
-            "bg-slate-1 rounded-full p-1 flex relative items-center",
-            "shadow-[0px_-1px_3px_0px_rgba(0,_0,_0,_0.05),_0px_7px_2px_0px_rgba(0,_0,_0,_0.02),_0px_4px_2px_0px_rgba(0,_0,_0,_0.05),_0px_2px_1px_0px_rgba(0,_0,_0,_0.05),_0px_1px_1px_0px_rgba(0,_0,_0,_0.03),_0px_0px_1px_0px_rgba(0,_0,_0,_0.04)]",
-            "dark:shadow-[0px_-1px_3px_0px_rgba(0,_0,_0,_0.03),_0px_7px_2px_0px_rgba(0,_0,_0,_0.03),_0px_4px_2px_0px_rgba(0,_0,_0,_0.05),_0px_2px_1px_0px_rgba(0,_0,_0,_0.1),_0px_1px_1px_0px_rgba(0,_0,_0,_0.1),_0px_0px_1px_0px_rgba(0,_0,_0,_0.1)]"
+            "bg-transparent rounded-full p-1 flex relative items-center",
+            "shadow-[0px_8px_30px_0px_rgba(0,0,0,0.3)]",
           )}
         >
           {/* Animated background */}
-          <NavbarLinkBackground
-            links={navItems.map((item) => item.url)}
-          />
+          <NavbarLinkBackground links={navItems.map((item) => item.url)} />
 
           {/* Navigation items */}
           {navItems.map(({ url, label }) => (

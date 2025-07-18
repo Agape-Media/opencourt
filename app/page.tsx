@@ -1,8 +1,6 @@
 import { InputForm } from "@/components/waitlist-form";
 import { WaitlistWrapper } from "@/components/box";
 import { waitlistConfig } from "@/lib/content";
-import SparkleBackground from "@/components/sparkle-background";
-
 export const dynamic = "force-static";
 export const revalidate = 30;
 
@@ -53,36 +51,31 @@ export default async function Home() {
   };
 
   return (
-    <>
-      <SparkleBackground />
-      <div className="relative z-10">
-        <WaitlistWrapper>
-          {/* Heading */}
-          <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-medium text-white whitespace-pre-wrap text-pretty">
-              {waitlistConfig.title}
-            </h1>
-            <div className="text-zinc-300 [&>p]:tracking-tight text-pretty">
-              <p>{waitlistConfig.subtitle}</p>
-            </div>
-          </div>
-          {/* Form */}
-          <div className="px-1 flex flex-col w-full self-stretch">
-            <InputForm
-              name="email"
-              type="email"
-              placeholder={waitlistConfig.form.emailPlaceholder}
-              required={true}
-              buttonCopy={{
-                idle: waitlistConfig.form.submitText,
-                success: waitlistConfig.form.successMessage,
-                loading: "Joining...",
-              }}
-              formAction={formAction}
-            />
-          </div>
-        </WaitlistWrapper>
+    <WaitlistWrapper>
+      {/* Heading */}
+      <div className="space-y-3">
+        <h1 className="text-2xl sm:text-3xl font-semibold text-white whitespace-pre-wrap text-pretty">
+          {waitlistConfig.title}
+        </h1>
+        <div className="text-white/80 [&>p]:tracking-tight text-pretty">
+          <p>{waitlistConfig.subtitle}</p>
+        </div>
       </div>
-    </>
+      {/* Form */}
+      <div className="px-1 flex flex-col w-full self-stretch">
+        <InputForm
+          name="email"
+          type="email"
+          placeholder={waitlistConfig.form.emailPlaceholder}
+          required={true}
+          buttonCopy={{
+            idle: waitlistConfig.form.submitText,
+            success: waitlistConfig.form.successMessage,
+            loading: "Joining...",
+          }}
+          formAction={formAction}
+        />
+      </div>
+    </WaitlistWrapper>
   );
 }

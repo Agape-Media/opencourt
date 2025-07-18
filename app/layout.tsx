@@ -2,7 +2,7 @@ import type { Viewport } from "next";
 import { Geist } from "next/font/google";
 import { Providers } from "@/context";
 import { Header } from "@/components/header";
-import { MeshGradientComponent } from "@/components/mesh-gradient";
+import SparkleBackground from "@/components/sparkle-background";
 import { siteConfig } from "@/lib/content";
 import "./globals.css";
 
@@ -45,39 +45,14 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // Static background configuration
-  const backgroundConfig = {
-    color1: { hex: "#3b82f6" },
-    color2: { hex: "#8b5cf6" },
-    color3: { hex: "#06b6d4" },
-    color4: { hex: "#10b981" },
-    speed: 0.5,
-  };
-
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.className} antialiased max-w-screen min-h-svh bg-slate-1 text-slate-12 opacity-0 duration-75 transition-opacity`}
+        className={`${geistSans.className} antialiased max-w-screen min-h-svh bg-black text-white`}
       >
         <Providers>
-          <MeshGradientComponent
-            colors={[
-              backgroundConfig.color1.hex,
-              backgroundConfig.color2.hex,
-              backgroundConfig.color3.hex,
-              backgroundConfig.color4.hex,
-            ]}
-            speed={backgroundConfig.speed}
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              zIndex: 0,
-              width: "100%",
-              height: "100%",
-            }}
-          />
-          <div className="max-w-screen-sm mx-auto w-full relative z-[1] flex flex-col min-h-screen">
+          <SparkleBackground />
+          <div className="max-w-screen-sm mx-auto w-full relative z-10 flex flex-col min-h-screen">
             <div className="px-5 gap-8 flex flex-col flex-1 py-[12vh]">
               <Header />
               <main className="flex justify-center">{children}</main>

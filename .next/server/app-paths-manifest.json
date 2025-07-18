@@ -1,3 +1,4 @@
 {
+  "/manifesto/page": "app/manifesto/page.js",
   "/page": "app/page.js"
 }

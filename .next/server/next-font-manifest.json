@@ -1,5 +1,9 @@
 {
   "app": {
+    "[project]/app/manifesto/page": [
+      "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.da1ebef7.woff2",
+      "static/media/SZc83FzrJKuqFbwMKk6EhUXz7RlNiCY-s.p.5f65919c.woff2"
+    ],
     "[project]/app/page": [
       "static/media/gyByhwUxId8gMEwcGFWNOITd-s.p.da1ebef7.woff2"
     ]
