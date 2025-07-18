@@ -1,6 +1,7 @@
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
 import Image from "next/image";
+import { MessageCircle } from "lucide-react";
 
 export async function WaitlistWrapper({ children }: PropsWithChildren) {
   // Static logo configuration
@@ -35,10 +36,18 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
         </div>
         <div className="flex flex-col gap-10">{children}</div>
       </div>
-      <footer className="flex justify-center items-center w-full self-stretch px-8 py-3 text-sm bg-gray-12/[.07] overflow-hidden">
+      <footer className="flex justify-between items-center w-full self-stretch px-8 py-3 text-sm bg-gray-12/[.07] overflow-hidden">
         <p className="text-xs text-slate-10">
           © {new Date().getFullYear()} OpenCourt. All rights reserved.
         </p>
+        <a
+          href="https://google.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-slate-10 hover:text-slate-12 transition-colors"
+        >
+          <MessageCircle size={16} />
+        </a>
       </footer>
     </div>
   );
