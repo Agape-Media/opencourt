@@ -62,7 +62,7 @@ export default async function Home() {
             <h1 className="text-2xl sm:text-3xl font-medium text-white whitespace-pre-wrap text-pretty">
               {waitlistConfig.title}
             </h1>
-            <div className="text-gray-300 [&>p]:tracking-tight text-pretty">
+            <div className="text-zinc-300 [&>p]:tracking-tight text-pretty">
               <p>{waitlistConfig.subtitle}</p>
             </div>
           </div>
