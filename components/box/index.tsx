@@ -29,7 +29,7 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
                 width={logo.width}
                 height={logo.height}
                 priority
-                className="filter invert"
+                className=""
               />{" "}
             </div>
             <h1 className="text-2xl font-semibold text-white">OpenCourt</h1>

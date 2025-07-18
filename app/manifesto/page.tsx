@@ -32,24 +32,23 @@ export default async function Manifesto() {
   return (
     <WaitlistWrapper>
       <div className="flex flex-col gap-10">
-        <div className="text-slate-11 [&>p]:tracking-tight [&>p]:leading-[1.6] [&>p:not(:last-child)]:mb-3 [&>h2]:text-slate-12 [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:mb-4 [&>h3]:text-slate-12 [&>h3]:text-lg [&>h3]:font-medium [&>h3]:mb-3 [&>ul]:ml-4 [&>ul]:space-y-2 [&>li]:list-disc text-pretty text-start">
+        <div className="text-white/80 [&>p]:tracking-tight [&>p]:leading-[1.6] [&>p:not(:last-child)]:mb-3 [&>h2]:text-white [&>h2]:text-xl [&>h2]:font-semibold [&>h2]:mb-4 [&>h3]:text-white [&>h3]:text-lg [&>h3]:font-medium [&>h3]:mb-3 [&>ul]:ml-4 [&>ul]:space-y-2 [&>li]:list-disc text-pretty text-start">
           <RichText content={manifestoConfig.content} />
         </div>
         <div className="flex flex-col gap-10">
-          <div className="flex flex-col gap-0.5 items-start">
+          <div className="flex flex-col gap-4 items-start">
             <p
               className={clsx(
-                "text-slate-12 text-4xl font-medium italic transform -rotate-12",
-                font.className
+                "text-white text-4xl font-medium italic transform -rotate-12",
+                font.className,
               )}
             >
               OpenCourt Team
             </p>
+
             <p className="text-slate-11 text-sm font-medium">
               The OpenCourt Team{" "}
-              <span className="text-slate-10 text-xs">
-                Founders & Builders
-              </span>
+              <span className="text-slate-10 text-xs">Founders & Builders</span>
             </p>
           </div>
         </div>
