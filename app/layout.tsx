@@ -59,7 +59,7 @@ export default async function RootLayout({
       <body
         className={`${geistSans.className} antialiased max-w-screen min-h-svh bg-slate-1 text-slate-12 opacity-0 duration-75 transition-opacity`}
       >
-        <Providers defaultTheme="system" forcedTheme={undefined}>
+        <Providers>
           <MeshGradientComponent
             colors={[
               backgroundConfig.color1.hex,
