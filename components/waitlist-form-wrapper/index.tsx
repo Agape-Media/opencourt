@@ -31,7 +31,7 @@ export function WaitlistFormWrapper({
   };
 
   return (
-    <div className="px-1 flex flex-col w-full self-stretch">
+    <div className="px-1 flex flex-col w-full self-stretch gap-4">
       <InputForm
         name="email"
         type="email"

@@ -1,7 +1,7 @@
 import clsx from "clsx";
 import { PropsWithChildren } from "react";
 import Image from "next/image";
-import { Github } from "lucide-react";
+import { GithubIcon as Github } from "lucide-react";
 
 export async function WaitlistWrapper({ children }: PropsWithChildren) {
   // Static logo configuration
@@ -19,7 +19,7 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
         "shadow-[0px_20px_50px_0px_rgba(0,0,0,0.3)]",
       )}
     >
-      <div className="flex flex-col items-center gap-6 flex-1 text-center w-full p-8 pb-6">
+      <div className="flex flex-col items-center gap-4 sm:gap-6 flex-1 text-center w-full p-4 sm:p-8 pb-4 sm:pb-6">
         <div>
           <div className="flex justify-center items-center gap-3 mx-auto">
             <div className="w-8 h-auto">
