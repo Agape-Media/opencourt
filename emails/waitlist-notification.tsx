@@ -69,7 +69,9 @@ const container = {
 const header = {
   textAlign: "center" as const,
   padding: "40px 20px 20px",
-  backgroundColor: "#111113",
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderBottom: "none",
   borderRadius: "12px 12px 0 0",
 };
 

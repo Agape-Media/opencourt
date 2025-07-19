@@ -100,8 +100,9 @@ const container = {
 const header = {
   textAlign: "center" as const,
   padding: "40px 20px 20px",
-  background:
-    "linear-gradient(135deg, #001c80 0%, #1ac7ff 25%, #04ffb1 50%, #ff1ff1 100%)",
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderBottom: "none",
   borderRadius: "12px 12px 0 0",
 };
 
@@ -124,8 +125,10 @@ const tagline = {
 };
 
 const content = {
-  backgroundColor: "#1a1a1c",
+  backgroundColor: "rgba(0, 0, 0, 0.8)",
   padding: "40px 20px",
+  border: "1px solid rgba(255, 255, 255, 0.1)",
+  borderTop: "none",
   borderRadius: "0 0 12px 12px",
 };
 
@@ -148,7 +151,7 @@ const text = {
 const features = {
   margin: "32px 0",
   padding: "24px",
-  backgroundColor: "rgba(255, 255, 255, 0.02)",
+  backgroundColor: "rgba(255, 255, 255, 0.05)",
   borderRadius: "8px",
   border: "1px solid rgba(255, 255, 255, 0.1)",
 };
