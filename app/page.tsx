@@ -20,7 +20,11 @@ export default async function Home() {
     }
 
     try {
-      const response = await fetch("/api/waitlist", {
+      const baseUrl = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}`
+        : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+
+      const response = await fetch(`${baseUrl}/api/waitlist`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
