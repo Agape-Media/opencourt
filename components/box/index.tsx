@@ -1,5 +1,5 @@
 import clsx from "clsx";
-import { PropsWithChildren } from "react";
+import type { PropsWithChildren } from "react";
 import Image from "next/image";
 import { GithubIcon as Github } from "lucide-react";
 

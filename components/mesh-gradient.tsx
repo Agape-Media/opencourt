@@ -1,6 +1,6 @@
 'use client'
 
-import { MeshGradient, MeshGradientProps } from '@paper-design/shaders-react'
+import { MeshGradient, type MeshGradientProps } from '@paper-design/shaders-react'
 import { useEffect } from 'react'
 
 export function MeshGradientComponent({ speed, ...props }: MeshGradientProps) {

@@ -1,6 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
 import { z } from "zod";
+import {
+  renderWaitlistWelcomeEmail,
+  renderWaitlistNotificationEmail,
+} from "@/lib/email-templates";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -16,28 +20,26 @@ export async function POST(request: NextRequest) {
     // Add to waitlist (you could store in a database here)
     // For now, we'll just send a confirmation email
 
+    const welcomeEmailHtml = await renderWaitlistWelcomeEmail(email);
+
     await resend.emails.send({
       from: "OpenCourt <noreply@opencourtpb.com>",
       to: [email],
-      subject: "Welcome to the OpenCourt Waitlist!",
-      html: `
-        <h1>Welcome to OpenCourt!</h1>
-        <p>Thank you for joining our waitlist. We're excited to have you on board!</p>
-        <p>We'll notify you as soon as we launch. In the meantime, follow us for updates.</p>
-        <p>Best regards,<br>The OpenCourt Team</p>
-      `,
+      subject: "Welcome to OpenCourt",
+      html: welcomeEmailHtml,
     });
+    // Send a notification to yourself about the new signup
+    const signupTime = new Date().toLocaleString();
+    const notificationEmailHtml = await renderWaitlistNotificationEmail(
+      email,
+      signupTime,
+    );
 
-    // Optionally, send a notification to yourself about the new signup
     await resend.emails.send({
       from: "OpenCourt <noreply@opencourtpb.com>",
       to: ["opencourtpb@gmail.com"],
-      subject: "New Waitlist Signup",
-      html: `
-        <h1>New Waitlist Signup</h1>
-        <p>Email: ${email}</p>
-        <p>Signed up at: ${new Date().toISOString()}</p>
-      `,
+      subject: "New OpenCourt Waitlist Signup",
+      html: notificationEmailHtml,
     });
 
     return NextResponse.json({

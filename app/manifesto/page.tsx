@@ -2,7 +2,7 @@ import { WaitlistWrapper } from "@/components/box";
 import { RichText } from "@/components/rich-text";
 import { Alex_Brush } from "next/font/google";
 import clsx from "clsx";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { manifestoConfig, siteConfig } from "@/lib/content";
 
 const font = Alex_Brush({
