@@ -1,0 +1,32 @@
+#!/bin/bash
+
+echo "🧹 Cleaning up project files..."
+
+# Remove node_modules directory
+if [ -d "node_modules" ]; then
+    echo "Removing node_modules..."
+    rm -rf node_modules
+    echo "✅ node_modules removed"
+else
+    echo "ℹ️  node_modules not found"
+fi
+
+# Remove .next directory
+if [ -d ".next" ]; then
+    echo "Removing .next..."
+    rm -rf .next
+    echo "✅ .next removed"
+else
+    echo "ℹ️  .next not found"
+fi
+
+# Remove bun.lock file
+if [ -f "bun.lock" ]; then
+    echo "Removing bun.lock..."
+    rm -f bun.lock
+    echo "✅ bun.lock removed"
+else
+    echo "ℹ️  bun.lock not found"
+fi
+
+echo "🎉 Cleanup complete!"

@@ -14,7 +14,8 @@
     "check": "biome check .",
     "check:fix": "biome check --write .",
     "start": "next start",
-    "email:preview": "email dev"
+    "email:preview": "email dev",
+    "clean-repo": "./clean-repo"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

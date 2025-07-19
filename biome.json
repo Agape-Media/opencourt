@@ -13,7 +13,8 @@
       "!**/node_modules/**",
       "!**/dist/**",
       "!**/build/**",
-      "!**/*.d.ts"
+      "!**/*.d.ts",
+      "!clean-repo"
     ]
   },
   "formatter": {
