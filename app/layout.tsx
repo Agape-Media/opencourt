@@ -36,7 +36,16 @@ export const metadata = {
     card: "summary_large_image",
     images: [siteConfig.metadata.ogImage.url],
   },
-  icons: [siteConfig.metadata.favicon.url],
+  icons: {
+    icon: [
+      { url: "/favicon.ico", sizes: "16x16 32x32", type: "image/x-icon" },
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/favicon-16x16.svg", sizes: "16x16", type: "image/svg+xml" },
+      { url: "/favicon-32x32.svg", sizes: "32x32", type: "image/svg+xml" },
+    ],
+    shortcut: "/favicon.ico",
+    apple: "/apple-touch-icon.svg",
+  },
   generator: "v0.dev",
 };
 
