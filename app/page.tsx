@@ -24,7 +24,10 @@ export default async function Home() {
         ? `https://${process.env.VERCEL_URL}`
         : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
-      const response = await fetch(`${baseUrl}/api/waitlist`, {
+      const url = `${baseUrl}/api/waitlist`;
+      console.log("Fetching URL:", url);
+
+      const response = await fetch(url, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -32,15 +35,22 @@ export default async function Home() {
         body: JSON.stringify({ email }),
       });
 
-      const result = await response.json();
+      console.log("Response status:", response.status);
+      console.log(
+        "Response headers:",
+        Object.fromEntries(response.headers.entries()),
+      );
 
       if (!response.ok) {
+        const text = await response.text();
+        console.log("Error response body:", text);
         return {
           success: false,
-          error: result.message || "Something went wrong",
+          error: `Server error: ${response.status}`,
         };
       }
 
+      await response.json();
       return { success: true };
     } catch (error) {
       console.error("Waitlist submission error:", error);
