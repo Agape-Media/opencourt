@@ -17,7 +17,7 @@ export async function POST(request: NextRequest) {
     // For now, we'll just send a confirmation email
 
     await resend.emails.send({
-      from: "OpenCourt <noreply@opencourt.com>",
+      from: "OpenCourt <noreply@opencourtpb.com>",
       to: [email],
       subject: "Welcome to the OpenCourt Waitlist!",
       html: `
@@ -30,8 +30,8 @@ export async function POST(request: NextRequest) {
 
     // Optionally, send a notification to yourself about the new signup
     await resend.emails.send({
-      from: "OpenCourt <noreply@opencourt.com>",
-      to: ["team@opencourt.com"], // Replace with your email
+      from: "OpenCourt <noreply@opencourtpb.com>",
+      to: ["opencourtpb@gmail.com"],
       subject: "New Waitlist Signup",
       html: `
         <h1>New Waitlist Signup</h1>
