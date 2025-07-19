@@ -1,5 +1,5 @@
-import { InputForm } from "@/components/waitlist-form";
 import { WaitlistWrapper } from "@/components/box";
+import { WaitlistFormWrapper } from "@/components/waitlist-form-wrapper";
 import { waitlistConfig } from "@/lib/content";
 export const dynamic = "force-static";
 export const revalidate = 30;
@@ -62,20 +62,7 @@ export default async function Home() {
         </div>
       </div>
       {/* Form */}
-      <div className="px-1 flex flex-col w-full self-stretch">
-        <InputForm
-          name="email"
-          type="email"
-          placeholder={waitlistConfig.form.emailPlaceholder}
-          required={true}
-          buttonCopy={{
-            idle: waitlistConfig.form.submitText,
-            success: waitlistConfig.form.successMessage,
-            loading: "Joining...",
-          }}
-          formAction={formAction}
-        />
-      </div>
+      <WaitlistFormWrapper serverAction={formAction} />
     </WaitlistWrapper>
   );
 }
