@@ -20,8 +20,10 @@ export default async function Home() {
     }
 
     try {
-      // Use relative URL for internal API calls to avoid domain issues
-      const url = "/api/waitlist";
+      const baseUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL
+        ? `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`
+        : process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+      const url = `${baseUrl}/api/waitlist`;
       console.log("Fetching URL:", url);
 
       const response = await fetch(url, {
