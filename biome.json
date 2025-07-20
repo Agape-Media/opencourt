@@ -22,52 +22,53 @@
     "formatWithErrors": false,
     "indentStyle": "space",
     "indentWidth": 2,
-    "lineEnding": "lf",
     "lineWidth": 80,
-    "attributePosition": "auto"
+    "lineEnding": "lf"
   },
-  "assist": { "actions": { "source": { "organizeImports": "on" } } },
   "linter": {
     "enabled": true,
     "rules": {
       "recommended": true,
-      "a11y": {
-        "recommended": true
-      },
-      "complexity": {
-        "recommended": true
-      },
       "correctness": {
-        "recommended": true
+        "noUnusedVariables": "error",
+        "noUnusedImports": "warn",
+        "noEmptyCharacterClassInRegex": "off"
       },
       "nursery": {
-        "recommended": false
-      },
-      "performance": {
-        "recommended": true
-      },
-      "security": {
-        "recommended": true
-      },
-      "style": {
-        "recommended": true
+        "useSortedClasses": "off"
       },
       "suspicious": {
-        "recommended": true
+        "noExplicitAny": "off",
+        "noArrayIndexKey": "off",
+        "noShadowRestrictedNames": "off",
+        "noImplicitAnyLet": "off",
+        "noAssignInExpressions": "off",
+        "noConsole": "warn"
+      },
+      "a11y": {
+        "noSvgWithoutTitle": "off",
+        "useValidAriaValues": "off"
+      },
+      "complexity": {
+        "noForEach": "off",
+        "noUselessSwitchCase": "off",
+        "noUselessFragments": "error"
+      },
+      "performance": {
+        "noAccumulatingSpread": "off"
       }
     }
   },
   "javascript": {
     "formatter": {
-      "jsxQuoteStyle": "double",
-      "quoteProperties": "asNeeded",
-      "trailingCommas": "es5",
-      "semicolons": "asNeeded",
       "arrowParentheses": "always",
+      "jsxQuoteStyle": "double",
+      "quoteStyle": "single",
+      "semicolons": "always",
+      "trailingCommas": "es5",
+      "quoteProperties": "asNeeded",
       "bracketSpacing": true,
-      "bracketSameLine": false,
-      "quoteStyle": "double",
-      "attributePosition": "auto"
+      "bracketSameLine": false
     }
   },
   "json": {

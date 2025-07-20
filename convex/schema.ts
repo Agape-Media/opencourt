@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server"
-import { v } from "convex/values"
+import { defineSchema, defineTable } from 'convex/server';
+import { v } from 'convex/values';
 
 export default defineSchema({
   waitlistCounter: defineTable({
@@ -9,5 +9,5 @@ export default defineSchema({
     email: v.string(),
     signupDate: v.number(),
     notified: v.optional(v.boolean()),
-  }).index("by_email", ["email"]),
-})
+  }).index('by_email', ['email']),
+});

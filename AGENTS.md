@@ -1,26 +1,24 @@
-# AGENTS.md - OpenCourt Development Guide
+# Agent Guidelines for OpenCourt
 
 ## Build/Lint/Test Commands
 
-- `bun run dev` - Start development server (Next.js + Convex)
-- `bun run build` - Build for production
-- `bun run lint` - Run Biome linter
-- `bun run lint:fix` - Fix linting issues automatically
-- `bun run format:fix` - Format code with Biome
-- `bun run check:fix` - Run all Biome checks and fixes
-- No test framework configured - verify changes manually
+- **Dev**: `bun run dev` (runs Convex + Next.js with Turbo)
+- **Build**: `bun run build`
+- **Lint**: `bun run lint` (Biome check)
+- **Lint Fix**: `bun run lint:fix` (Biome check with --write)
+- **Email Preview**: `bun run email:preview`
+- No test framework configured
 
-## Code Style Guidelines
+## Code Style (Biome Configuration)
 
-- **Formatter**: Biome with 2-space indentation, 80 char line width
-- **Imports**: Use `@/` for absolute imports, organize imports automatically
-- **Types**: Use TypeScript with strict mode, prefer `type` over `interface`
-- **Naming**: camelCase for variables/functions, PascalCase for components
-- **Components**: Use function declarations, destructure props with types
-- **Error Handling**: Use try/catch with proper error logging, return structured responses
-- **Quotes**: Double quotes for JSX, semicolons as needed, trailing commas ES5 style
+- **Formatting**: 2 spaces, 80 char line width, double quotes, trailing commas (ES5)
+- **Imports**: Auto-organize imports, use `@/` for root imports
+- **TypeScript**: Strict mode enabled, preserve JSX
+- **Components**: Use React.forwardRef for UI components, export interfaces
+- **Naming**: PascalCase for components, camelCase for functions/variables
+- **Error Handling**: Return objects with `{ success: boolean; error?: string }`
+- **Server Actions**: Use "use server" directive, handle errors gracefully
 
 ## Tech Stack
 
-- Next.js 15 with App Router, React 19, TypeScript, Tailwind CSS
-- Convex for backend, Resend for emails, Radix UI components, Zod validation
+- Next.js 15 with App Router, Convex backend, Tailwind CSS, Radix UI, TypeScript, React Email

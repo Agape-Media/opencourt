@@ -1,22 +1,22 @@
-import clsx from "clsx"
-import { Github, Instagram } from "lucide-react"
-import Image from "next/image"
-import type { PropsWithChildren } from "react"
+import clsx from 'clsx';
+import { Github, Instagram } from 'lucide-react';
+import Image from 'next/image';
+import type { PropsWithChildren } from 'react';
 
 export async function WaitlistWrapper({ children }: PropsWithChildren) {
   // Static logo configuration
   const logo = {
-    url: "/logo-dark.svg",
-    alt: "OpenCourt Logo",
+    url: '/logo-dark.svg',
+    alt: 'OpenCourt Logo',
     width: 200,
     height: 60,
-  }
+  };
 
   return (
     <div
       className={clsx(
-        "w-full mx-auto max-w-[500px] flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl pb-0 overflow-hidden rounded-xl border border-white/10",
-        "shadow-[0px_20px_50px_0px_rgba(0,0,0,0.3)]"
+        'w-full mx-auto max-w-[500px] flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl pb-0 overflow-hidden rounded-xl border border-white/10',
+        'shadow-[0px_20px_50px_0px_rgba(0,0,0,0.3)]'
       )}
     >
       <div className="flex flex-col items-center gap-4 sm:gap-6 flex-1 text-center w-full p-4 sm:p-8 pb-4 sm:pb-6">
@@ -30,7 +30,7 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
                 height={logo.height}
                 priority
                 className=""
-              />{" "}
+              />{' '}
             </div>
             <h1 className="text-2xl font-semibold text-white">OpenCourt</h1>
           </div>
@@ -61,5 +61,5 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
         </div>
       </footer>
     </div>
-  )
+  );
 }

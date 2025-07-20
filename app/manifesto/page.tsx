@@ -1,32 +1,32 @@
-import clsx from "clsx"
-import type { Metadata } from "next"
-import { Alex_Brush } from "next/font/google"
-import { WaitlistWrapper } from "@/components/box"
-import { RichText } from "@/components/rich-text"
-import { manifestoConfig, siteConfig } from "@/lib/content"
+import clsx from 'clsx';
+import type { Metadata } from 'next';
+import { Alex_Brush } from 'next/font/google';
+import { WaitlistWrapper } from '@/components/box';
+import { RichText } from '@/components/rich-text';
+import { manifestoConfig, siteConfig } from '@/lib/content';
 
 const font = Alex_Brush({
-  variable: "--font-alex-brush",
-  subsets: ["latin"],
-  weight: "400",
-})
+  variable: '--font-alex-brush',
+  subsets: ['latin'],
+  weight: '400',
+});
 
-export const dynamic = "force-static"
-export const revalidate = 30
+export const dynamic = 'force-static';
+export const revalidate = 30;
 
 export const metadata: Metadata = {
   title: manifestoConfig.title,
   description: siteConfig.metadata.defaultDescription,
   openGraph: {
-    type: "website",
+    type: 'website',
     images: [siteConfig.metadata.ogImage.url],
   },
   twitter: {
-    card: "summary_large_image",
+    card: 'summary_large_image',
     images: [siteConfig.metadata.ogImage.url],
   },
   icons: [siteConfig.metadata.favicon.url],
-}
+};
 
 export default async function Manifesto() {
   return (
@@ -39,7 +39,7 @@ export default async function Manifesto() {
           <div className="flex flex-col gap-6 items-start">
             <p
               className={clsx(
-                "text-white text-4xl font-medium italic transform -rotate-12",
+                'text-white text-4xl font-medium italic transform -rotate-12',
                 font.className
               )}
             >
@@ -47,12 +47,12 @@ export default async function Manifesto() {
             </p>
 
             <p className="text-slate-11 text-sm font-medium">
-              The OpenCourt Team{" "}
+              The OpenCourt Team{' '}
               <span className="text-slate-10 text-xs">Founders & Builders</span>
             </p>
           </div>
         </div>
       </div>
     </WaitlistWrapper>
-  )
+  );
 }

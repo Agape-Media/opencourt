@@ -77,18 +77,18 @@
 }
 
 :root {
-  color: theme("colors.gray.1");
-  background-color: theme("colors.slate.12");
+  color: rgb(var(--gray-1));
+  background-color: rgb(var(--slate-12));
 }
 
 :root:is(html.light) {
   /* Fix overlap scroll background */
-  background-color: theme("colors.slate.1");
+  background-color: rgb(var(--slate-1));
 }
 
 html,
 body {
-  background-color: theme("colors.slate.12");
+  background-color: rgb(var(--slate-12));
 }
 
 /* Only add padding when the body has a scrollbar */
@@ -97,7 +97,7 @@ body:has(html:not(:last-child)) {
 }
 
 *:focus-visible {
-  outline-color: theme("colors.slate.12");
+  outline-color: rgb(var(--slate-12));
 }
 
 #gradient-canvas {

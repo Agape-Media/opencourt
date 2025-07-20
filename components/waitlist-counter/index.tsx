@@ -1,23 +1,23 @@
-"use client"
-import { useMutation, useQuery } from "convex/react"
-import { useEffect } from "react"
-import { api } from "@/convex/_generated/api"
+'use client';
+import { useMutation, useQuery } from 'convex/react';
+import { useEffect } from 'react';
+import { api } from '@/convex/_generated/api';
 
 export function WaitlistCounter() {
-  const count = useQuery(api.waitlist.getCount)
-  const initializeCounter = useMutation(api.init.initializeCounter)
+  const count = useQuery(api.waitlist.getCount);
+  const initializeCounter = useMutation(api.init.initializeCounter);
 
   useEffect(() => {
     if (count === 0) {
-      initializeCounter()
+      initializeCounter();
     }
-  }, [count, initializeCounter])
+  }, [count, initializeCounter]);
   if (count === undefined) {
     return (
       <div className="text-center mt-6">
         <div className="text-white/60 text-sm">Loading...</div>
       </div>
-    )
+    );
   }
 
   return (
@@ -29,5 +29,5 @@ export function WaitlistCounter() {
         Be part of the movement to take back pickleball ratings
       </div>
     </div>
-  )
+  );
 }

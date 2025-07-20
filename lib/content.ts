@@ -1,42 +1,42 @@
 export const siteConfig = {
   metadata: {
-    titleTemplate: "%s | OpenCourt",
-    defaultTitle: "OpenCourt - Transparent Pickleball for the People",
+    titleTemplate: '%s | OpenCourt',
+    defaultTitle: 'OpenCourt - Transparent Pickleball for the People',
     defaultDescription:
-      "The open-source, ad-free alternative to DUPR. Built by the community, for the community. Transparent ratings, no ads, and truly for the people.",
+      'The open-source, ad-free alternative to DUPR. Built by the community, for the community. Transparent ratings, no ads, and truly for the people.',
     favicon: {
-      url: "/favicon.ico",
+      url: '/favicon.ico',
     },
     ogImage: {
-      url: "/og-image.png",
+      url: '/og-image.png',
     },
   },
   settings: {
     logo: {
-      url: "/logo.png",
-      alt: "OpenCourt Logo",
+      url: '/logo.png',
+      alt: 'OpenCourt Logo',
     },
     navigation: [
-      { label: "Home", url: "/" },
-      { label: "Manifesto", url: "/manifesto" },
+      { label: 'Home', url: '/' },
+      { label: 'Manifesto', url: '/manifesto' },
     ],
   },
-}
+};
 
 export const waitlistConfig = {
-  title: "Pickleball Ratings, Reimagined",
+  title: 'Pickleball Ratings, Reimagined',
   subtitle:
-    "The transparent, community-driven alternative to DUPR. Open source, ad-free, and built for players by players. Join the movement for honest pickleball ratings.",
+    'The transparent, community-driven alternative to DUPR. Open source, ad-free, and built for players by players. Join the movement for honest pickleball ratings.',
   form: {
-    emailPlaceholder: "Enter your email address",
-    submitText: "Join the Movement",
+    emailPlaceholder: 'Enter your email address',
+    submitText: 'Join the Movement',
     successMessage: "Welcome to the community! We'll be in touch soon.",
-    errorMessage: "Something went wrong. Please try again.",
+    errorMessage: 'Something went wrong. Please try again.',
   },
-}
+};
 
 export const manifestoConfig = {
-  title: "Our Manifesto",
+  title: 'Our Manifesto',
   content: `
     <h2>Pickleball Deserves Better</h2>
     <p>Corporate rating systems prioritize profit over players. Hidden algorithms, endless ads, and zero transparency. We're done with that.</p>
@@ -52,4 +52,4 @@ export const manifestoConfig = {
     
     <p>Join the movement. Take back pickleball ratings.</p>
   `,
-}
+};

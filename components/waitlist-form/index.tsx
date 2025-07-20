@@ -1,86 +1,87 @@
-"use client"
-import clsx from "clsx"
-import type React from "react"
+'use client';
+import clsx from 'clsx';
+import type React from 'react';
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState } from 'react';
 
 type InputForm = {
   formAction?: (
     data: FormData
-  ) => Promise<{ success: true } | { success: false; error: string }>
+  ) => Promise<{ success: true } | { success: false; error: string }>;
   buttonCopy: {
-    success: string
-    idle: string
-    loading: string
-  }
-} & Omit<React.InputHTMLAttributes<HTMLInputElement>, "action" | "formAction">
+    success: string;
+    idle: string;
+    loading: string;
+  };
+} & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'action' | 'formAction'>;
 
-type State = "idle" | "loading" | "success" | "error"
+type State = 'idle' | 'loading' | 'success' | 'error';
 
 const STATES: Record<State, State> = {
-  idle: "idle",
-  loading: "loading",
-  success: "success",
-  error: "error",
-}
+  idle: 'idle',
+  loading: 'loading',
+  success: 'success',
+  error: 'error',
+};
 
 export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
-  const [state, setState] = useState<State>(STATES.idle)
-  const [error, setError] = useState<string>()
-  const [value, setValue] = useState("")
-  const errorTimeout = useRef<NodeJS.Timeout | null>(null)
+  const [state, setState] = useState<State>(STATES.idle);
+  const [error, setError] = useState<string>();
+  const [value, setValue] = useState('');
+  const errorTimeout = useRef<NodeJS.Timeout | null>(null);
 
   // Auto-reset success state back to idle after 2 seconds
   useEffect(() => {
     if (state === STATES.success) {
       const resetTimeout = setTimeout(() => {
-        setState(STATES.idle)
-      }, 5000)
+        setState(STATES.idle);
+      }, 5000);
 
-      return () => clearTimeout(resetTimeout)
+      return () => clearTimeout(resetTimeout);
     }
-  }, [state])
+  }, [state]);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
-    const formEl = e.currentTarget
-    if (state === STATES.success || state === STATES.loading) return
+    e.preventDefault();
+    const formEl = e.currentTarget;
+    if (state === STATES.success || state === STATES.loading) return;
     if (errorTimeout.current) {
-      clearTimeout(errorTimeout.current)
-      setError(undefined)
-      setState(STATES.idle)
+      clearTimeout(errorTimeout.current);
+      setError(undefined);
+      setState(STATES.idle);
     }
-    if (formAction && typeof formAction === "function") {
+    if (formAction && typeof formAction === 'function') {
       try {
-        setState(STATES.loading)
-        const data = await formAction(new FormData(formEl))
+        setState(STATES.loading);
+        const data = await formAction(new FormData(formEl));
 
         if (data.success) {
-          setState(STATES.success)
+          setState(STATES.success);
 
-          formEl.reset()
-          setValue("")
+          formEl.reset();
+          setValue('');
         } else {
-          setState(STATES.error)
-          setError(data.error)
+          setState(STATES.error);
+          setError(data.error);
           errorTimeout.current = setTimeout(() => {
-            setError(undefined)
-            setState(STATES.idle)
-          }, 3000)
+            setError(undefined);
+            setState(STATES.idle);
+          }, 3000);
         }
       } catch (error) {
-        setState(STATES.error)
-        setError("There was an error while submitting the form")
-        console.error(error)
+        setState(STATES.error);
+        setError('There was an error while submitting the form');
+        // biome-ignore lint/suspicious/noConsole: Error logging for form submission failures
+        console.error(error);
         errorTimeout.current = setTimeout(() => {
-          setError(undefined)
-          setState(STATES.idle)
-        }, 3000)
+          setError(undefined);
+          setState(STATES.idle);
+        }, 3000);
       }
     }
-  }
-  const isSubmitted = state === "success"
-  const inputDisabled = state === "loading"
+  };
+  const isSubmitted = state === 'success';
+  const inputDisabled = state === 'loading';
 
   return (
     <form
@@ -93,14 +94,13 @@ export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
             {...props}
             value={value}
             className={clsx(
-              "flex-1 text-sm pl-4 pr-20 sm:pr-28 py-2 h-11 bg-white/10 cursor-text rounded-full text-white placeholder:text-white/50 border border-white/20 focus:border-white/40 focus:ring-2 focus:ring-white/10 outline-none transition-all backdrop-blur-sm"
+              'flex-1 text-sm pl-4 pr-20 sm:pr-28 py-2 h-11 bg-white/10 cursor-text rounded-full text-white placeholder:text-white/50 border border-white/20 focus:border-white/40 focus:ring-2 focus:ring-white/10 outline-none transition-all backdrop-blur-sm'
             )}
             disabled={inputDisabled}
             onChange={(e) => setValue(e.target.value)}
             autoComplete="off"
             data-1p-ignore
             data-lpignore
-            autoFocus
           />
         )}
         <button
@@ -108,15 +108,15 @@ export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
           disabled={inputDisabled}
           className={clsx(
             isSubmitted
-              ? "w-full h-11 bg-white text-black text-sm rounded-full font-medium flex items-center justify-center hover:bg-white/90 transition-all"
-              : "absolute h-8 px-2 sm:px-3.5 bg-white text-black text-xs sm:text-sm top-1/2 transform -translate-y-1/2 right-1.5 rounded-full font-medium flex gap-1 items-center hover:bg-white/90 transition-all",
-            "disabled:cursor-not-allowed disabled:bg-white/50",
+              ? 'w-full h-11 bg-white text-black text-sm rounded-full font-medium flex items-center justify-center hover:bg-white/90 transition-all'
+              : 'absolute h-8 px-2 sm:px-3.5 bg-white text-black text-xs sm:text-sm top-1/2 transform -translate-y-1/2 right-1.5 rounded-full font-medium flex gap-1 items-center hover:bg-white/90 transition-all',
+            'disabled:cursor-not-allowed disabled:bg-white/50',
             {
-              "bg-white/80": state === "loading",
+              'bg-white/80': state === 'loading',
             }
           )}
         >
-          {state === "loading" ? (
+          {state === 'loading' ? (
             <>
               {buttonCopy.loading}
               <Loading />
@@ -135,11 +135,11 @@ export function InputForm({ formAction, buttonCopy, ...props }: InputForm) {
         </p>
       )}
     </form>
-  )
+  );
 }
 
 const Loading = () => (
   <div className="flex items-center gap-2">
     <div className="w-4 h-4 rounded-full border border-[currentColor] !border-t-[transparent] animate-spin" />
   </div>
-)
+);
