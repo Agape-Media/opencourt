@@ -1,5 +1,5 @@
-import { WaitlistWelcomeEmail } from "@/emails/waitlist-welcome";
-import { WaitlistNotificationEmail } from "@/emails/waitlist-notification";
+import { WaitlistNotificationEmail } from "@/emails/waitlist-notification"
+import { WaitlistWelcomeEmail } from "@/emails/waitlist-welcome"
 
 export default function EmailPreview() {
   return (
@@ -31,5 +31,5 @@ export default function EmailPreview() {
         </div>
       </div>
     </div>
-  );
+  )
 }

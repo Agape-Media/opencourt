@@ -1,8 +1,5 @@
 {
   "node": {
-    "externalPackages": [
-      "@node-rs/argon2",
-      "@node-rs/bcrypt"
-    ]
+    "externalPackages": ["@node-rs/argon2", "@node-rs/bcrypt"]
   }
 }

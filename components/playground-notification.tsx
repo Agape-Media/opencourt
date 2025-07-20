@@ -1,7 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
 import { AlertTriangle, Check, Clock, ExternalLink } from "lucide-react"
+import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 
 interface PlaygroundSetupModalProps {
@@ -13,7 +13,10 @@ interface PlaygroundSetupModalProps {
   envs: Record<string, { isValid: boolean; name: string; label: string }>
 }
 
-export function PlaygroundSetupModal({ playgroundInfo, envs }: PlaygroundSetupModalProps) {
+export function PlaygroundSetupModal({
+  playgroundInfo,
+  envs,
+}: PlaygroundSetupModalProps) {
   const [isDismissed, setIsDismissed] = useState(false)
   const [open, setOpen] = useState(false)
 
@@ -68,14 +71,16 @@ export function PlaygroundSetupModal({ playgroundInfo, envs }: PlaygroundSetupMo
         onClick={() => setOpen(false)}
         className={cn(
           "absolute inset-0 transition-all duration-200",
-          open ? "pointer-events-auto bg-black/30 opacity-100" : "pointer-events-none opacity-0",
+          open
+            ? "pointer-events-auto bg-black/30 opacity-100"
+            : "pointer-events-none opacity-0"
         )}
       />
       <button
         onClick={() => setOpen(true)}
         className={cn(
           "inline-flex absolute top-4 right-4 items-center justify-center text-center gap-2 px-4 h-9 font-medium transition-all duration-200 rounded-lg outline-none pointer-events-auto bg-slate-12 hover:bg-slate-11 text-sm text-slate-1 shadow-sm",
-          open && "opacity-20 scale-95 pointer-events-none",
+          open && "opacity-20 scale-95 pointer-events-none"
         )}
       >
         {hasPlaygroundExpiry ? (
@@ -89,13 +94,17 @@ export function PlaygroundSetupModal({ playgroundInfo, envs }: PlaygroundSetupMo
       <div
         className={cn(
           "pointer-events-auto absolute top-16 right-4 w-[500px] bg-slate-1 outline-none flex flex-col rounded-xl shadow-xl border border-slate-6 transition-all duration-200 origin-top",
-          open ? "opacity-100 scale-100 translate-y-0" : "opacity-0 scale-95 -translate-y-2 pointer-events-none",
+          open
+            ? "opacity-100 scale-100 translate-y-0"
+            : "opacity-0 scale-95 -translate-y-2 pointer-events-none"
         )}
         style={{ maxHeight: "500px" }}
       >
         <div className="flex items-center justify-between flex-shrink-0 px-4 py-3 border-b border-dashed bg-slate-2 border-slate-6 rounded-t-xl">
           <div className="flex items-center gap-2">
-            <span className={cn("text-base font-semibold text-slate-12")}>Waitlist Setup</span>
+            <span className={cn("text-base font-semibold text-slate-12")}>
+              Waitlist Setup
+            </span>
           </div>
           <a
             href={playgroundInfo.editUrl}
@@ -145,7 +154,7 @@ export function PlaygroundSetupModal({ playgroundInfo, envs }: PlaygroundSetupMo
                     key={env.name}
                     className={cn(
                       "flex items-center gap-3 p-3 border rounded-lg bg-slate-2 border-slate-6 transition-all duration-200",
-                      open && `animate-in slide-in-from-bottom-2 duration-300`,
+                      open && `animate-in slide-in-from-bottom-2 duration-300`
                     )}
                     style={{
                       animationDelay: open ? `${index * 50}ms` : "0ms",
@@ -155,16 +164,31 @@ export function PlaygroundSetupModal({ playgroundInfo, envs }: PlaygroundSetupMo
                     <div
                       className={cn(
                         "flex-shrink-0 w-8 h-8 rounded-sm flex items-center justify-center transition-colors duration-150",
-                        env.isValid ? "bg-slate-3 text-slate-12" : "bg-slate-4 text-slate-11",
+                        env.isValid
+                          ? "bg-slate-3 text-slate-12"
+                          : "bg-slate-4 text-slate-11"
                       )}
                     >
-                      {env.isValid ? <Check className="w-4 h-4" /> : <AlertTriangle className="w-4 h-4" />}
+                      {env.isValid ? (
+                        <Check className="w-4 h-4" />
+                      ) : (
+                        <AlertTriangle className="w-4 h-4" />
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-slate-12">{env.label}</div>
-                      <div className="font-mono text-xs truncate text-slate-10">{env.name}</div>
+                      <div className="text-sm font-medium text-slate-12">
+                        {env.label}
+                      </div>
+                      <div className="font-mono text-xs truncate text-slate-10">
+                        {env.name}
+                      </div>
                     </div>
-                    <div className={cn("text-xs font-medium", env.isValid ? "text-slate-11" : "text-slate-10")}>
+                    <div
+                      className={cn(
+                        "text-xs font-medium",
+                        env.isValid ? "text-slate-11" : "text-slate-10"
+                      )}
+                    >
                       {env.isValid ? "Set" : "Missing"}
                     </div>
                   </div>

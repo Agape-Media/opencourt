@@ -1,27 +1,27 @@
-import type { Viewport } from "next";
-import { Geist } from "next/font/google";
-import { Providers } from "@/context";
-import { Header } from "@/components/header";
-import SparkleBackground from "@/components/sparkle-background";
-import { siteConfig } from "@/lib/content";
-import "./globals.css";
+import type { Viewport } from "next"
+import { Geist } from "next/font/google"
+import { Header } from "@/components/header"
+import SparkleBackground from "@/components/sparkle-background"
+import { Providers } from "@/context"
+import { siteConfig } from "@/lib/content"
+import "./globals.css"
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   preload: true,
-});
+})
 
-export const dynamic = "force-static";
-export const revalidate = 30;
+export const dynamic = "force-static"
+export const revalidate = 30
 
 export const viewport: Viewport = {
   maximumScale: 1, // Disable auto-zoom on mobile Safari
-};
+}
 
 export const metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL || "https://opencourt.dev",
+    process.env.NEXT_PUBLIC_SITE_URL || "https://opencourt.dev"
   ),
   title: {
     template: siteConfig.metadata.titleTemplate,
@@ -47,12 +47,12 @@ export const metadata = {
     apple: "/apple-touch-icon.svg",
   },
   generator: "v0.dev",
-};
+}
 
 export default async function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
@@ -70,5 +70,5 @@ export default async function RootLayout({
         </Providers>
       </body>
     </html>
-  );
+  )
 }

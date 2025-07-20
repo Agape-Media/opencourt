@@ -1,9 +1,9 @@
-import type { ReactNode } from "react";
+import type { ReactNode } from "react"
 
 interface RichTextProps {
-  children?: ReactNode;
-  content?: string;
-  className?: string;
+  children?: ReactNode
+  content?: string
+  className?: string
 }
 
 export function RichText({ children, content, className }: RichTextProps) {
@@ -13,8 +13,8 @@ export function RichText({ children, content, className }: RichTextProps) {
         className={className}
         dangerouslySetInnerHTML={{ __html: content }}
       />
-    );
+    )
   }
 
-  return <div className={className}>{children}</div>;
+  return <div className={className}>{children}</div>
 }

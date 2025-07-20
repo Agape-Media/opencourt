@@ -1,7 +1,7 @@
-import clsx from "clsx";
-import type { PropsWithChildren } from "react";
-import Image from "next/image";
-import { GithubIcon as Github } from "lucide-react";
+import clsx from "clsx"
+import { Github, Instagram } from "lucide-react"
+import Image from "next/image"
+import type { PropsWithChildren } from "react"
 
 export async function WaitlistWrapper({ children }: PropsWithChildren) {
   // Static logo configuration
@@ -10,13 +10,13 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
     alt: "OpenCourt Logo",
     width: 200,
     height: 60,
-  };
+  }
 
   return (
     <div
       className={clsx(
         "w-full mx-auto max-w-[500px] flex flex-col justify-center items-center bg-black/80 backdrop-blur-xl pb-0 overflow-hidden rounded-xl border border-white/10",
-        "shadow-[0px_20px_50px_0px_rgba(0,0,0,0.3)]",
+        "shadow-[0px_20px_50px_0px_rgba(0,0,0,0.3)]"
       )}
     >
       <div className="flex flex-col items-center gap-4 sm:gap-6 flex-1 text-center w-full p-4 sm:p-8 pb-4 sm:pb-6">
@@ -41,15 +41,25 @@ export async function WaitlistWrapper({ children }: PropsWithChildren) {
         <p className="text-xs text-white/60">
           © {new Date().getFullYear()} OpenCourt. All rights reserved.
         </p>
-        <a
-          href="https://github.com/themattmayfield/opencourt"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-white/60 hover:text-white transition-colors"
-        >
-          <Github size={16} />
-        </a>
+        <div className="flex items-center gap-3">
+          <a
+            href="https://github.com/themattmayfield/opencourt"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/60 hover:text-white transition-colors"
+          >
+            <Github size={16} />
+          </a>
+          <a
+            href="https://instagram.com/opencourtpb"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-white/60 hover:text-white transition-colors"
+          >
+            <Instagram size={16} />
+          </a>
+        </div>
       </footer>
     </div>
-  );
+  )
 }

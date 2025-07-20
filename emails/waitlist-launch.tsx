@@ -4,21 +4,24 @@ import {
   Head,
   Heading,
   Html,
+  Link,
   Preview,
   Section,
   Text,
 } from "@react-email/components"
 
-interface WaitlistWelcomeEmailProps {
+interface WaitlistLaunchEmailProps {
   email?: string
 }
 
-export const WaitlistWelcomeEmail = ({
+export const WaitlistLaunchEmail = ({
   email = "user@example.com",
-}: WaitlistWelcomeEmailProps) => (
+}: WaitlistLaunchEmailProps) => (
   <Html>
     <Head />
-    <Preview>Welcome to OpenCourt - Pickleball Ratings, Reimagined</Preview>
+    <Preview>
+      OpenCourt is Live - Your Transparent Pickleball Rating System
+    </Preview>
     <Body style={main}>
       <Container style={container}>
         <Section style={header}>
@@ -27,54 +30,60 @@ export const WaitlistWelcomeEmail = ({
         </Section>
 
         <Section style={content}>
-          <Heading style={h1}>Welcome to the Community</Heading>
+          <Heading style={h1}>The Wait is Over!</Heading>
 
           <Text style={text}>
-            Thank you for joining the OpenCourt waitlist. We're building the
-            transparent, community-driven rating system that pickleball
-            deserves.
+            OpenCourt is officially live! Thank you for being part of our
+            waitlist community. You believed in transparent, community-driven
+            pickleball ratings from day one.
           </Text>
 
-          <Text style={text}>
-            Corporate rating systems prioritize profit over players. Hidden
-            algorithms, endless ads, and zero transparency. We're done with
-            that.
-          </Text>
+          <Text style={text}>What you can do now:</Text>
 
           <Section style={features}>
             <Text style={feature}>
-              Transparent: Open algorithms, no black boxes
+              ✓ Create your player profile with transparent ratings
             </Text>
             <Text style={feature}>
-              Community-Driven: Built by players, shaped by feedback
+              ✓ Log matches and see real-time rating updates
             </Text>
             <Text style={feature}>
-              Ad-Free Forever: Pure ratings, zero distractions
+              ✓ Connect with other players in your area
+            </Text>
+            <Text style={feature}>
+              ✓ View open-source algorithms behind every rating
             </Text>
           </Section>
 
+          <Section style={ctaSection}>
+            <Link href="https://opencourtpb.com" style={ctaButton}>
+              Start Playing on OpenCourt
+            </Link>
+          </Section>
+
           <Text style={text}>
-            OpenCourt is open source, ad-free, and built by players, for
-            players. You'll be among the first to know when we launch.
+            As a waitlist member, you're getting early access to all features.
+            No ads, no hidden algorithms, no corporate interference - just
+            honest pickleball ratings built by players, for players.
           </Text>
 
           <Text style={text}>
-            We'll keep you updated on our progress as we build honest pickleball
-            ratings together.
+            Ready to experience transparent pickleball ratings? Let's build the
+            future of the sport together.
           </Text>
         </Section>
 
         <Section style={footer}>
           <Text style={footerText}>
-            Best regards,
+            Welcome to the community,
             <br />
             The OpenCourt Team
           </Text>
 
           <Text style={footerNote}>
             You're receiving this email because you signed up for the OpenCourt
-            waitlist with {email}. We'll only send you important updates about
-            our launch.
+            waitlist with {email}. This is our launch announcement - the moment
+            you've been waiting for!
           </Text>
         </Section>
       </Container>
@@ -164,6 +173,23 @@ const feature = {
   paddingLeft: "8px",
 }
 
+const ctaSection = {
+  textAlign: "center" as const,
+  margin: "32px 0",
+}
+
+const ctaButton = {
+  backgroundColor: "#ffffff",
+  color: "#111113",
+  fontSize: "16px",
+  fontWeight: "600",
+  textDecoration: "none",
+  padding: "16px 32px",
+  borderRadius: "8px",
+  display: "inline-block",
+  border: "2px solid #ffffff",
+}
+
 const footer = {
   padding: "20px",
   textAlign: "center" as const,
@@ -186,4 +212,4 @@ const footerNote = {
   textAlign: "center" as const,
 }
 
-export default WaitlistWelcomeEmail
+export default WaitlistLaunchEmail

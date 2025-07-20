@@ -1,64 +1,71 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { Resend } from "resend";
-import { z } from "zod";
+import { ConvexHttpClient } from "convex/browser"
+import { type NextRequest, NextResponse } from "next/server"
+import { Resend } from "resend"
+import { z } from "zod"
+import { api } from "@/convex/_generated/api"
 import {
-  renderWaitlistWelcomeEmail,
   renderWaitlistNotificationEmail,
-} from "@/lib/email-templates";
+  renderWaitlistWelcomeEmail,
+} from "@/lib/email-templates"
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env.RESEND_API_KEY)
+const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || "")
 
 const waitlistSchema = z.object({
   email: z.string().email("Invalid email address"),
-});
+})
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email } = waitlistSchema.parse(body);
+    const body = await request.json()
+    const { email } = waitlistSchema.parse(body)
 
-    // Add to waitlist (you could store in a database here)
-    // For now, we'll just send a confirmation email
+    // Add email to Convex database
+    const addResult = await convex.mutation(api.waitlist.addEmail, { email })
 
-    const welcomeEmailHtml = await renderWaitlistWelcomeEmail(email);
+    // Only send emails if this is a new signup (not a duplicate)
+    if (addResult.success) {
+      const welcomeEmailHtml = await renderWaitlistWelcomeEmail(email)
 
-    await resend.emails.send({
-      from: "OpenCourt <noreply@opencourtpb.com>",
-      to: [email],
-      subject: "Welcome to OpenCourt",
-      html: welcomeEmailHtml,
-    });
-    // Send a notification to yourself about the new signup
-    const signupTime = new Date().toLocaleString();
-    const notificationEmailHtml = await renderWaitlistNotificationEmail(
-      email,
-      signupTime,
-    );
+      await resend.emails.send({
+        from: "OpenCourt <noreply@opencourtpb.com>",
+        to: [email],
+        subject: "Welcome to OpenCourt",
+        html: welcomeEmailHtml,
+      })
 
-    await resend.emails.send({
-      from: "OpenCourt <noreply@opencourtpb.com>",
-      to: ["opencourtpb@gmail.com"],
-      subject: "New OpenCourt Waitlist Signup",
-      html: notificationEmailHtml,
-    });
+      // Send a notification to yourself about the new signup
+      const signupTime = new Date().toLocaleString()
+      const notificationEmailHtml = await renderWaitlistNotificationEmail(
+        email,
+        signupTime
+      )
+
+      await resend.emails.send({
+        from: "OpenCourt <noreply@opencourtpb.com>",
+        to: ["opencourtpb@gmail.com"],
+        subject: "New OpenCourt Waitlist Signup",
+        html: notificationEmailHtml,
+      })
+    }
 
     return NextResponse.json({
       success: true,
       message: "Successfully joined the waitlist!",
-    });
+    })
   } catch (error) {
-    console.error("Waitlist signup error:", error);
+    console.error("Waitlist signup error:", error)
 
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { success: false, message: "Invalid email address" },
-        { status: 400 },
-      );
+        { status: 400 }
+      )
     }
 
     return NextResponse.json(
       { success: false, message: "Something went wrong. Please try again." },
-      { status: 500 },
-    );
+      { status: 500 }
+    )
   }
 }

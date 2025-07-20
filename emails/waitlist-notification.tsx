@@ -7,11 +7,11 @@ import {
   Preview,
   Section,
   Text,
-} from "@react-email/components";
+} from "@react-email/components"
 
 interface WaitlistNotificationEmailProps {
-  email: string;
-  signupTime: string;
+  email: string
+  signupTime: string
 }
 
 export const WaitlistNotificationEmail = ({
@@ -48,14 +48,14 @@ export const WaitlistNotificationEmail = ({
       </Container>
     </Body>
   </Html>
-);
+)
 const main = {
   backgroundColor: "#f8f9fa",
   fontFamily:
     '-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Oxygen-Sans,Ubuntu,Cantarell,"Helvetica Neue",sans-serif',
   margin: "0",
   padding: "0",
-};
+}
 
 const container = {
   backgroundColor: "#ffffff",
@@ -64,7 +64,7 @@ const container = {
   maxWidth: "600px",
   border: "1px solid #e1e5e9",
   borderRadius: "12px",
-};
+}
 
 const header = {
   textAlign: "center" as const,
@@ -73,7 +73,7 @@ const header = {
   border: "1px solid rgba(255, 255, 255, 0.1)",
   borderBottom: "none",
   borderRadius: "12px 12px 0 0",
-};
+}
 
 const logo = {
   color: "#ffffff",
@@ -83,7 +83,7 @@ const logo = {
   lineHeight: "1.2",
   margin: "0 0 8px 0",
   textAlign: "center" as const,
-};
+}
 
 const tagline = {
   color: "rgba(255, 255, 255, 0.6)",
@@ -91,11 +91,11 @@ const tagline = {
   fontWeight: "400",
   margin: "0",
   textAlign: "center" as const,
-};
+}
 
 const content = {
   padding: "40px 20px",
-};
+}
 
 const h1 = {
   color: "#111113",
@@ -104,14 +104,14 @@ const h1 = {
   lineHeight: "1.3",
   margin: "0 0 24px 0",
   textAlign: "center" as const,
-};
+}
 
 const text = {
   color: "#64748b",
   fontSize: "16px",
   lineHeight: "1.6",
   margin: "24px 0 0 0",
-};
+}
 
 const infoBox = {
   backgroundColor: "#f8fafc",
@@ -119,7 +119,7 @@ const infoBox = {
   borderRadius: "8px",
   padding: "24px",
   margin: "0 0 24px 0",
-};
+}
 
 const label = {
   color: "#475569",
@@ -128,7 +128,7 @@ const label = {
   margin: "0 0 4px 0",
   textTransform: "uppercase" as const,
   letterSpacing: "0.05em",
-};
+}
 
 const value = {
   color: "#111113",
@@ -136,6 +136,6 @@ const value = {
   fontWeight: "500",
   margin: "0 0 16px 0",
   fontFamily: "monospace",
-};
+}
 
-export default WaitlistNotificationEmail;
+export default WaitlistNotificationEmail

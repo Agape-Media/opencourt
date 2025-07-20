@@ -21,7 +21,7 @@ export const siteConfig = {
       { label: "Manifesto", url: "/manifesto" },
     ],
   },
-};
+}
 
 export const waitlistConfig = {
   title: "Pickleball Ratings, Reimagined",
@@ -33,7 +33,7 @@ export const waitlistConfig = {
     successMessage: "Welcome to the community! We'll be in touch soon.",
     errorMessage: "Something went wrong. Please try again.",
   },
-};
+}
 
 export const manifestoConfig = {
   title: "Our Manifesto",
@@ -52,4 +52,4 @@ export const manifestoConfig = {
     
     <p>Join the movement. Take back pickleball ratings.</p>
   `,
-};
+}

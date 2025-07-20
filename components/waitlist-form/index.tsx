@@ -2,7 +2,7 @@
 import clsx from "clsx"
 import type React from "react"
 
-import { useRef, useState, useEffect } from "react"
+import { useEffect, useRef, useState } from "react"
 
 type InputForm = {
   formAction?: (
