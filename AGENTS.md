@@ -1,24 +1,27 @@
-# Agent Guidelines for OpenCourt
+# AGENTS.md - OpenCourt Development Guide
 
 ## Build/Lint/Test Commands
 
-- **Dev**: `bun run dev` (runs Convex + Next.js with Turbo)
-- **Build**: `bun run build`
-- **Lint**: `bun run lint` (Biome check)
-- **Lint Fix**: `bun run lint:fix` (Biome check with --write)
-- **Email Preview**: `bun run email:preview`
-- No test framework configured
+- `bun run dev` - Start development server (Next.js + Convex)
+- `bun run build` - Build for production
+- `bun run lint` - Run Biome linter
+- `bun run lint:fix` - Auto-fix linting issues
+- `bun run type-check` - TypeScript type checking
+- `bun run email:preview` - Preview email templates
 
-## Code Style (Biome Configuration)
+## Code Style Guidelines
 
-- **Formatting**: 2 spaces, 80 char line width, double quotes, trailing commas (ES5)
-- **Imports**: Auto-organize imports, use `@/` for root imports
-- **TypeScript**: Strict mode enabled, preserve JSX
-- **Components**: Use React.forwardRef for UI components, export interfaces
-- **Naming**: PascalCase for components, camelCase for functions/variables
-- **Error Handling**: Return objects with `{ success: boolean; error?: string }`
-- **Server Actions**: Use "use server" directive, handle errors gracefully
+- **Formatter**: Biome with 2-space indentation, 80 char line width, single quotes
+- **Imports**: Use `@/` path alias for project root imports
+- **Types**: Use TypeScript with strict mode, prefer `type` over `interface`
+- **Components**: Use React.forwardRef for UI components, export named functions
+- **Naming**: camelCase for variables/functions, PascalCase for components/types
+- **Error Handling**: Use try/catch blocks, console.error for debugging (with biome-ignore)
+- **State**: Use descriptive state enums/constants (e.g., `STATES.idle`)
+- **Styling**: Tailwind CSS with clsx for conditional classes, use cn() utility
 
 ## Tech Stack
 
-- Next.js 15 with App Router, Convex backend, Tailwind CSS, Radix UI, TypeScript, React Email
+- Next.js 15 with App Router, React 19, TypeScript, Tailwind CSS
+- Convex for backend, Radix UI components, React Hook Form + Zod validation
+- Biome for linting/formatting, Bun as package manager
