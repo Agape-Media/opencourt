@@ -14,7 +14,8 @@
       "!**/dist/**",
       "!**/build/**",
       "!**/*.d.ts",
-      "!clean-repo"
+      "!clean-repo",
+      "!convex/_generated/**"
     ]
   },
   "formatter": {
