@@ -46,7 +46,7 @@ export const manifestoConfig = {
     <h3>Our Promise</h3>
     <ul>
       <li><strong>Transparent:</strong> Open algorithms, no black boxes</li>
-      <li><strong>Community-Owned:</strong> You build it, you control it</li>
+      <li><strong>Community-Driven:</strong> Your feedback shapes the algorithm</li>
       <li><strong>Ad-Free Forever:</strong> Pure pickleball, zero distractions</li>
     </ul>
     
