@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "build": "next build",
-    "dev": "concurrently \"bunx convex dev\" \"next dev --turbo\"",
-    "dev:next": "next dev --turbo",
+    "dev": "concurrently \"bunx convex dev\" \"next dev\"",
+    "dev:next": "next dev",
     "dev:convex": "bunx convex dev",
     "lint": "biome check .",
     "lint:fix": "biome check . --write",
@@ -15,6 +15,7 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@daypicker/react": "^10.0.1",
     "@hookform/resolvers": "^3.9.1",
     "@paper-design/shaders-react": "latest",
     "@radix-ui/react-accordion": "1.2.2",
@@ -55,11 +56,10 @@
     "framer-motion": "^12.23.6",
     "input-otp": "1.4.1",
     "lucide-react": "^0.454.0",
-    "next": "15.2.4",
+    "next": "16.3.4",
     "next-themes": "^0.4.6",
-    "react": "^19",
-    "react-day-picker": "8.10.1",
-    "react-dom": "^19",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
@@ -67,19 +67,23 @@
     "sonner": "^1.7.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
-    "vaul": "^0.9.6",
+    "vaul": "^1.1.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.2",
     "@react-email/preview-server": "^4.2.3",
     "@types/node": "^22",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
     "concurrently": "^9.2.0",
     "postcss": "^8.5",
     "react-email": "^4.2.3",
     "tailwindcss": "^3.4.17",
     "typescript": "^5"
+  },
+  "overrides": {
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7"
   }
 }
