@@ -1,9 +1,8 @@
 import { type NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { z } from 'zod';
 import { renderWaitlistLaunchEmail } from '@/lib/email-templates';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmail } from '@/lib/resend';
+import { getRequiredEnv, isAuthorizedRequest } from '@/lib/server-utils';
 
 const launchEmailSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -11,12 +10,19 @@ const launchEmailSchema = z.object({
 
 export async function POST(request: NextRequest) {
   try {
+    if (!isAuthorizedRequest(request, getRequiredEnv('WAITLIST_API_SECRET'))) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { email } = launchEmailSchema.parse(body);
 
     const launchEmailHtml = await renderWaitlistLaunchEmail(email);
 
-    await resend.emails.send({
+    await sendEmail({
       from: 'OpenCourt <noreply@opencourtpb.com>',
       to: [email],
       subject: 'OpenCourt is Live! 🎾',

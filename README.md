@@ -37,10 +37,16 @@ Create a `.env.local` file:
 
 ```env
 RESEND_API_KEY="your-resend-api-key"
+NEXT_PUBLIC_CONVEX_URL="your-convex-url"
+WAITLIST_API_SECRET="a-long-random-secret"
 NEXT_PUBLIC_BASE_URL="http://localhost:3000"
 ```
 
 Get your Resend API key from [resend.com](https://resend.com/)
+
+Set `WAITLIST_API_SECRET` to the same random value in the Next.js environment
+and the connected Convex deployment. The administrative launch-email endpoints
+require this value as a bearer token.
 
 **Start the development server**
 
@@ -53,6 +59,15 @@ yarn dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the application.
+
+**Run checks**
+
+```bash
+bun run test
+bun run lint
+bun run type-check
+WAITLIST_TEST_BASE_URL="https://www.opencourtpb.com" bun run test:e2e
+```
 
 ## Customization
 
@@ -102,6 +117,8 @@ This is a standard Next.js application and can be deployed to any platform that 
 ## Environment Variables
 
 - `RESEND_API_KEY` - Your Resend API key for sending emails
+- `NEXT_PUBLIC_CONVEX_URL` - The Convex deployment URL
+- `WAITLIST_API_SECRET` - Shared only by Vercel and Convex to protect writes
 - `NEXT_PUBLIC_BASE_URL` - Your application's base URL (for API calls)
 
 ## License

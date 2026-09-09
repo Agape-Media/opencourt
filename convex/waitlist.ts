@@ -1,97 +1,150 @@
 import { v } from 'convex/values';
-import { internalMutation, mutation, query } from './_generated/server';
+import { mutation, query } from './_generated/server';
+
+function requireApiSecret(secret: string) {
+  const configuredSecret = process.env.WAITLIST_API_SECRET;
+
+  if (!configuredSecret || secret !== configuredSecret) {
+    throw new Error('Unauthorized');
+  }
+}
 
 export const getCount = query({
   args: {},
   handler: async (ctx) => {
-    const counter = await ctx.db.query('waitlistCounter').first();
-    return counter?.count ?? 0;
+    const emails = await ctx.db.query('waitlistEmails').collect();
+    return emails.length;
   },
 });
 
-export const incrementCount = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const counter = await ctx.db.query('waitlistCounter').first();
-
-    if (counter) {
-      await ctx.db.patch(counter._id, { count: counter.count + 1 });
-      return counter.count + 1;
-    } else {
-      await ctx.db.insert('waitlistCounter', { count: 1 });
-      return 1;
-    }
-  },
-});
-
-export const initializeCount = mutation({
-  args: {},
-  handler: async (ctx) => {
-    const counter = await ctx.db.query('waitlistCounter').first();
-
-    if (!counter) {
-      await ctx.db.insert('waitlistCounter', { count: 42 });
-      return 42;
-    }
-
-    return counter.count;
-  },
-});
-
-export const autoIncrementCount = internalMutation({
-  args: {},
-  handler: async (ctx) => {
-    // Random chance to increment (roughly every 8-15 seconds when called every second)
-    // This gives us a 1/8 to 1/15 chance each second, averaging to 8-15 second intervals
-    const randomChance = Math.random();
-    const shouldIncrement = randomChance < 1 / (8 + Math.random() * 7); // Between 1/15 and 1/8 chance
-
-    if (!shouldIncrement) {
-      return;
-    }
-
-    const counter = await ctx.db.query('waitlistCounter').first();
-
-    if (counter) {
-      await ctx.db.patch(counter._id, { count: counter.count + 1 });
-    } else {
-      await ctx.db.insert('waitlistCounter', { count: 1 });
-    }
-  },
-});
-
-export const addEmail = mutation({
-  args: { email: v.string() },
-  handler: async (ctx, { email }) => {
+export const registerEmail = mutation({
+  args: { email: v.string(), secret: v.string() },
+  handler: async (ctx, { email, secret }) => {
+    requireApiSecret(secret);
+    const normalizedEmail = email.trim().toLowerCase();
     const existing = await ctx.db
       .query('waitlistEmails')
-      .withIndex('by_email', (q) => q.eq('email', email))
+      .withIndex('by_email', (q) => q.eq('email', normalizedEmail))
       .first();
 
     if (existing) {
-      return { success: false, message: 'Email already on waitlist' };
+      const legacyRecord = existing.deliveryTrackingEnabled !== true;
+
+      return {
+        emailId: existing._id,
+        email: normalizedEmail,
+        isNew: false,
+        welcomeEmailSent:
+          legacyRecord || existing.welcomeEmailSentAt !== undefined,
+        notificationEmailSent:
+          legacyRecord || existing.notificationEmailSentAt !== undefined,
+      };
     }
 
-    await ctx.db.insert('waitlistEmails', {
-      email,
+    const emailId = await ctx.db.insert('waitlistEmails', {
+      email: normalizedEmail,
       signupDate: Date.now(),
       notified: false,
+      deliveryTrackingEnabled: true,
     });
 
-    return { success: true, message: 'Added to waitlist' };
+    return {
+      emailId,
+      email: normalizedEmail,
+      isNew: true,
+      welcomeEmailSent: false,
+      notificationEmailSent: false,
+    };
   },
 });
 
-export const getAllEmails = query({
-  args: {},
-  handler: async (ctx) => {
-    return await ctx.db.query('waitlistEmails').collect();
+export const markEmailSent = mutation({
+  args: {
+    emailId: v.id('waitlistEmails'),
+    emailType: v.union(v.literal('welcome'), v.literal('notification')),
+    secret: v.string(),
+  },
+  handler: async (ctx, { emailId, emailType, secret }) => {
+    requireApiSecret(secret);
+    const sentAt = Date.now();
+
+    if (emailType === 'welcome') {
+      await ctx.db.patch(emailId, { welcomeEmailSentAt: sentAt });
+    } else {
+      await ctx.db.patch(emailId, { notificationEmailSentAt: sentAt });
+    }
+  },
+});
+
+export const normalizeExistingEmails = mutation({
+  args: { secret: v.string() },
+  handler: async (ctx, { secret }) => {
+    requireApiSecret(secret);
+    const emails = await ctx.db.query('waitlistEmails').collect();
+    const seen = new Set<string>();
+    let normalizedCount = 0;
+    let duplicateCount = 0;
+
+    for (const record of emails) {
+      const normalizedEmail = record.email.trim().toLowerCase();
+
+      if (seen.has(normalizedEmail)) {
+        await ctx.db.delete(record._id);
+        duplicateCount += 1;
+      } else {
+        seen.add(normalizedEmail);
+
+        if (record.email !== normalizedEmail) {
+          await ctx.db.patch(record._id, { email: normalizedEmail });
+          normalizedCount += 1;
+        }
+      }
+    }
+
+    return { normalizedCount, duplicateCount };
+  },
+});
+
+export const importLegacyEmails = mutation({
+  args: {
+    emails: v.array(
+      v.object({
+        email: v.string(),
+        signupDate: v.number(),
+        notified: v.optional(v.boolean()),
+      })
+    ),
+    secret: v.string(),
+  },
+  handler: async (ctx, { emails, secret }) => {
+    requireApiSecret(secret);
+    let importedCount = 0;
+
+    for (const record of emails) {
+      const email = record.email.trim().toLowerCase();
+      const existing = await ctx.db
+        .query('waitlistEmails')
+        .withIndex('by_email', (q) => q.eq('email', email))
+        .first();
+
+      if (!existing) {
+        await ctx.db.insert('waitlistEmails', {
+          email,
+          signupDate: record.signupDate,
+          notified: record.notified,
+        });
+        importedCount += 1;
+      }
+    }
+
+    return { importedCount };
   },
 });
 
 export const getUnnotifiedEmails = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { secret: v.string() },
+  handler: async (ctx, { secret }) => {
+    requireApiSecret(secret);
     return await ctx.db
       .query('waitlistEmails')
       .filter((q) => q.neq(q.field('notified'), true))
@@ -100,8 +153,12 @@ export const getUnnotifiedEmails = query({
 });
 
 export const markEmailsAsNotified = mutation({
-  args: { emailIds: v.array(v.id('waitlistEmails')) },
-  handler: async (ctx, { emailIds }) => {
+  args: {
+    emailIds: v.array(v.id('waitlistEmails')),
+    secret: v.string(),
+  },
+  handler: async (ctx, { emailIds, secret }) => {
+    requireApiSecret(secret);
     for (const id of emailIds) {
       await ctx.db.patch(id, { notified: true });
     }

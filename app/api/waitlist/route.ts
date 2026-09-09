@@ -1,57 +1,86 @@
 import { ConvexHttpClient } from 'convex/browser';
 import { type NextRequest, NextResponse } from 'next/server';
-import { Resend } from 'resend';
 import { z } from 'zod';
 import { api } from '@/convex/_generated/api';
 import {
   renderWaitlistNotificationEmail,
   renderWaitlistWelcomeEmail,
 } from '@/lib/email-templates';
-
-const resend = new Resend(process.env.RESEND_API_KEY);
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || '');
+import { sendEmail } from '@/lib/resend';
+import { getRequiredEnv } from '@/lib/server-utils';
 
 const waitlistSchema = z.object({
-  email: z.string().email('Invalid email address'),
+  email: z.string().trim().toLowerCase().email('Invalid email address'),
 });
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
     const { email } = waitlistSchema.parse(body);
+    const secret = getRequiredEnv('WAITLIST_API_SECRET');
+    const convex = new ConvexHttpClient(
+      getRequiredEnv('NEXT_PUBLIC_CONVEX_URL')
+    );
 
-    // Add email to Convex database
-    const addResult = await convex.mutation(api.waitlist.addEmail, { email });
+    const registration = await convex.mutation(api.waitlist.registerEmail, {
+      email,
+      secret,
+    });
 
-    // Only send emails if this is a new signup (not a duplicate)
-    if (addResult.success) {
-      const welcomeEmailHtml = await renderWaitlistWelcomeEmail(email);
+    if (!registration.welcomeEmailSent) {
+      try {
+        const welcomeEmailHtml = await renderWaitlistWelcomeEmail(email);
 
-      await resend.emails.send({
-        from: 'OpenCourt <noreply@opencourtpb.com>',
-        to: [email],
-        subject: 'Welcome to OpenCourt',
-        html: welcomeEmailHtml,
-      });
+        await sendEmail({
+          from: 'OpenCourt <noreply@opencourtpb.com>',
+          to: [email],
+          subject: 'Welcome to OpenCourt',
+          html: welcomeEmailHtml,
+        });
+        await convex.mutation(api.waitlist.markEmailSent, {
+          emailId: registration.emailId,
+          emailType: 'welcome',
+          secret,
+        });
+      } catch (error) {
+        // The signup remains successful if email delivery is unavailable. Its
+        // pending state can be retried by resubmission.
+        // biome-ignore lint/suspicious/noConsole: Operational email failure
+        console.error('Welcome email error:', error);
+      }
+    }
 
-      // Send a notification to yourself about the new signup
-      const signupTime = new Date().toLocaleString();
-      const notificationEmailHtml = await renderWaitlistNotificationEmail(
-        email,
-        signupTime
-      );
+    if (!registration.notificationEmailSent) {
+      try {
+        const signupTime = new Date().toLocaleString();
+        const notificationEmailHtml = await renderWaitlistNotificationEmail(
+          email,
+          signupTime
+        );
 
-      await resend.emails.send({
-        from: 'OpenCourt <noreply@opencourtpb.com>',
-        to: ['opencourtpb@gmail.com'],
-        subject: 'New OpenCourt Waitlist Signup',
-        html: notificationEmailHtml,
-      });
+        await sendEmail({
+          from: 'OpenCourt <noreply@opencourtpb.com>',
+          to: ['admin@opencourtpb.com'],
+          subject: 'New OpenCourt Waitlist Signup',
+          html: notificationEmailHtml,
+        });
+        await convex.mutation(api.waitlist.markEmailSent, {
+          emailId: registration.emailId,
+          emailType: 'notification',
+          secret,
+        });
+      } catch (error) {
+        // The signup and welcome email remain successful if only the internal
+        // notification fails. Its pending state can be retried by resubmission.
+        // biome-ignore lint/suspicious/noConsole: Operational email failure
+        console.error('Waitlist notification email error:', error);
+      }
     }
 
     return NextResponse.json({
       success: true,
       message: 'Successfully joined the waitlist!',
+      isNew: registration.isNew,
     });
   } catch (error) {
     // biome-ignore lint/suspicious/noConsole: Error logging for waitlist signup failures

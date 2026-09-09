@@ -1,17 +1,9 @@
 'use client';
-import { useMutation, useQuery } from 'convex/react';
-import { useEffect } from 'react';
+import { useQuery } from 'convex/react';
 import { api } from '@/convex/_generated/api';
 
 export function WaitlistCounter() {
   const count = useQuery(api.waitlist.getCount);
-  const initializeCounter = useMutation(api.init.initializeCounter);
-
-  useEffect(() => {
-    if (count === 0) {
-      initializeCounter();
-    }
-  }, [count, initializeCounter]);
   if (count === undefined) {
     return (
       <div className="text-center mt-6">

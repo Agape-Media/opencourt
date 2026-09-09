@@ -1,17 +1,28 @@
 import { ConvexHttpClient } from 'convex/browser';
-import { NextResponse } from 'next/server';
-import { Resend } from 'resend';
+import { type NextRequest, NextResponse } from 'next/server';
 import { api } from '@/convex/_generated/api';
 import { renderWaitlistLaunchEmail } from '@/lib/email-templates';
+import { sendEmail } from '@/lib/resend';
+import { getRequiredEnv, isAuthorizedRequest } from '@/lib/server-utils';
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-const convex = new ConvexHttpClient(process.env.NEXT_PUBLIC_CONVEX_URL || '');
-
-export async function POST() {
+export async function POST(request: NextRequest) {
   try {
+    const secret = getRequiredEnv('WAITLIST_API_SECRET');
+
+    if (!isAuthorizedRequest(request, secret)) {
+      return NextResponse.json(
+        { success: false, message: 'Unauthorized' },
+        { status: 401 }
+      );
+    }
+
+    const convex = new ConvexHttpClient(
+      getRequiredEnv('NEXT_PUBLIC_CONVEX_URL')
+    );
     // Get all unnotified emails from Convex
     const unnotifiedEmails = await convex.query(
-      api.waitlist.getUnnotifiedEmails
+      api.waitlist.getUnnotifiedEmails,
+      { secret }
     );
 
     if (unnotifiedEmails.length === 0) {
@@ -32,7 +43,7 @@ export async function POST() {
           emailRecord.email
         );
 
-        await resend.emails.send({
+        await sendEmail({
           from: 'OpenCourt <noreply@opencourtpb.com>',
           to: [emailRecord.email],
           subject: 'OpenCourt is Live! 🎾',
@@ -57,7 +68,10 @@ export async function POST() {
 
     // Mark successfully sent emails as notified
     if (emailIds.length > 0) {
-      await convex.mutation(api.waitlist.markEmailsAsNotified, { emailIds });
+      await convex.mutation(api.waitlist.markEmailsAsNotified, {
+        emailIds,
+        secret,
+      });
     }
 
     const successCount = results.filter((r) => r.success).length;

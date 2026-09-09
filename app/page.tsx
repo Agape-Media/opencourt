@@ -1,6 +1,7 @@
 import { WaitlistWrapper } from '@/components/box';
 import { WaitlistFormWrapper } from '@/components/waitlist-form-wrapper';
 import { waitlistConfig } from '@/lib/content';
+
 export const dynamic = 'force-static';
 export const revalidate = 30;
 
@@ -34,26 +35,18 @@ export default async function Home() {
         },
         body: JSON.stringify({ email }),
       });
-
-      // biome-ignore lint/suspicious/noConsole: Debug logging for response status
-      console.log('Response status:', response.status);
-      // biome-ignore lint/suspicious/noConsole: Debug logging for response headers
-      console.log(
-        'Response headers:',
-        Object.fromEntries(response.headers.entries())
-      );
+      const result = (await response.json()) as {
+        success: boolean;
+        message?: string;
+      };
 
       if (!response.ok) {
-        const text = await response.text();
-        // biome-ignore lint/suspicious/noConsole: Debug logging for error response
-        console.log('Error response body:', text);
         return {
           success: false,
-          error: `Server error: ${response.status}`,
+          error: result.message || 'Something went wrong. Please try again.',
         };
       }
 
-      await response.json();
       return { success: true };
     } catch (error) {
       // biome-ignore lint/suspicious/noConsole: Error logging for waitlist submission failures
