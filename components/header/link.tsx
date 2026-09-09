@@ -5,6 +5,9 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import type React from 'react';
 
+const normalizePathname = (pathname: string) =>
+  pathname === '/index' ? '/' : pathname.replace(/\/$/, '') || '/';
+
 // NavbarLink component
 export const NavbarLink = ({
   href,
@@ -14,11 +17,13 @@ export const NavbarLink = ({
   children: React.ReactNode;
 }) => {
   const pathname = usePathname();
+  const isActive = normalizePathname(pathname) === href;
+
   return (
     <Link
       href={href}
       className={`relative text-sm font-medium py-2 px-3 transition-colors duration-200 text-white w-[90px] flex items-center justify-center
-        ${pathname === href ? 'opacity-100' : 'opacity-60 hover:opacity-80'}`}
+        ${isActive ? 'opacity-100' : 'opacity-60 hover:opacity-80'}`}
     >
       {children}
     </Link>
@@ -28,7 +33,7 @@ export const NavbarLink = ({
 // NavbarLinkBackground component
 export const NavbarLinkBackground = ({ links }: { links: string[] }) => {
   const pathname = usePathname();
-  const activeIndex = links.indexOf(pathname);
+  const activeIndex = links.indexOf(normalizePathname(pathname));
 
   return (
     <div
