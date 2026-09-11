@@ -13,6 +13,7 @@ export * from '@/rating/doubles';
 export * from '@/rating/glicko2';
 export * from '@/rating/history';
 export * from '@/rating/leaderboard';
+export * from '@/rating/margin';
 export * from '@/rating/period';
 export * from '@/rating/types';
 export * from '@/rating/utils';
