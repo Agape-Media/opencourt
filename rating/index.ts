@@ -7,9 +7,12 @@
  *   import { rate, ratePeriod, winProbability } from '@/rating';
  */
 
+export * from '@/rating/calibration';
 export * from '@/rating/decay';
 export * from '@/rating/doubles';
 export * from '@/rating/glicko2';
+export * from '@/rating/history';
+export * from '@/rating/leaderboard';
 export * from '@/rating/period';
 export * from '@/rating/types';
 export * from '@/rating/utils';

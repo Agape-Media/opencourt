@@ -22,9 +22,13 @@ choices that the community should challenge and improve — see
 | `period.ts` | `ratePeriod` — rate a whole field at once, correctly, from everyone's pre-period ratings. |
 | `doubles.ts` | A doubles-aware layer that rates individual players from doubles games, with selectable team strategies. |
 | `utils.ts` | `winProbability`, `confidenceInterval`, `isProvisional` — read-only ways to interpret a rating. |
+| `history.ts` | `replayHistory` — replay a season period by period; get final standings and a trajectory. |
+| `calibration.ts` | `evaluatePredictions` (Brier + log-loss) and `tuneTau` — measure and tune predictive accuracy on real data. |
+| `leaderboard.ts` | `leaderboard` / `conservativeRating` — rank a field by what players are confidently worth. |
 | `decay.ts` | Optional, off-by-default inactivity decay toward the mean. |
 | `types.ts` | `Rating`, `GameResult`, `RatingConfig`, and sensible defaults. |
 | `index.ts` | One import for everything: `import { ... } from '@/rating'`. |
+| `example.ts` | A runnable demo: `bun rating/example.ts` plays a season and prints a leaderboard + calibration. |
 
 No runtime dependencies. Pure functions. Every value in, every value out.
 
@@ -127,6 +131,46 @@ beating a strong pair lifts the weaker partner more than the stronger one.
 For a real league, prefer accumulating each player's games across the period
 (`doublesResult`) and calling `rate` once, rather than game by game.
 
+## Tuning & validation
+
+A rating system you cannot score against real results is one you cannot trust.
+Replay a season and measure how well the ratings actually predicted it:
+
+```ts
+import { evaluatePredictions, tuneTau } from '@/rating/calibration';
+import { replayHistory } from '@/rating/history';
+import { leaderboard } from '@/rating/leaderboard';
+
+// `periods` is an array of games-per-rating-period.
+const { final } = replayHistory(players, periods);
+leaderboard(final); // ranked best-first by conservative rating
+
+const { brier, logLoss } = evaluatePredictions(players, periods);
+// Lower is better. Predictions are graded out-of-sample: each game is
+// predicted from the ratings held BEFORE its period is folded in.
+
+// Glickman says to test tau for accuracy rather than guess it:
+const ranked = tuneTau(players, periods, [0.2, 0.3, 0.5, 0.8, 1.2]);
+ranked[0].tau; // the tau that predicted your history best
+```
+
+`bun rating/example.ts` runs all of this on a toy season and prints the result.
+
+## Wiring it into a real app
+
+- **A rating period is a business decision**, not a code one: a session, a
+  week, an event. Collect that period's confirmed games, then call `ratePeriod`
+  once. Longer periods are steadier; shorter ones react faster.
+- **Persist three numbers per player** — `rating`, `rd`, `volatility` — plus
+  the date of their last rated period (to inflate RD, and optionally `decay`,
+  for players who sat out).
+- **Only rate confirmed results.** Uncertainty (RD) is the built-in defence
+  against thin or disputed data: with few games, ratings stay wide and honest
+  rather than confidently wrong.
+- **Show the range, not just the number.** `confidenceInterval` and
+  `isProvisional` keep new players from being presented as more settled than
+  they are.
+
 ## Inactivity decay (optional)
 
 Glicko-2 on its own never moves an idle player's rating — it only grows their
@@ -161,7 +205,8 @@ the more accurate one.
 
 The suite also covers invariants (monotonic in score, RD stays positive,
 order-independence of a period), a multi-period season simulation that sorts
-players into their true skill order, and every helper. Run it:
+players into their true skill order, the calibration and leaderboard helpers,
+and every utility. Run it:
 
 ```bash
 bun test tests/unit
