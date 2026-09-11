@@ -47,6 +47,12 @@ export type RatingConfig = {
   readonly defaultVolatility: number;
   /** Convergence tolerance for the volatility solver. */
   readonly convergence: number;
+  /**
+   * Safety cap on iterations of the volatility solver. The paper's own
+   * simulations never exceeded 19; this only guards against pathological or
+   * malformed input, and exceeding it throws rather than looping forever.
+   */
+  readonly maxVolatilityIterations: number;
 };
 
 /**
@@ -59,6 +65,7 @@ export const DEFAULT_CONFIG: RatingConfig = {
   defaultRd: 350,
   defaultVolatility: 0.06,
   convergence: 1e-6,
+  maxVolatilityIterations: 100,
 };
 
 /** Build the rating state for a brand-new player under the given config. */
@@ -68,4 +75,54 @@ export function newPlayer(config: RatingConfig = DEFAULT_CONFIG): Rating {
     rd: config.defaultRd,
     volatility: config.defaultVolatility,
   };
+}
+
+/** A player identified by id, for rating a whole field over one period. */
+export type RatedPlayer = {
+  readonly id: string;
+  readonly rating: Rating;
+};
+
+/** One singles game within a rating period, keyed by player id. */
+export type PeriodGame = {
+  readonly playerA: string;
+  readonly playerB: string;
+  /** Score for `playerA`: 1 win, 0 loss, 0.5 draw. B's score is the mirror. */
+  readonly scoreA: number;
+};
+
+/**
+ * One game's contribution to a rating change. Together, a full period's
+ * contributions sum exactly to the total rating change, so nothing is hidden.
+ */
+export type GameContribution = {
+  /** The opponent faced in this game. */
+  readonly opponent: Rating;
+  /** The actual score (1/0/0.5). */
+  readonly score: number;
+  /** The score the model expected beforehand (a win probability, 0..1). */
+  readonly expected: number;
+  /** How many display points this single game moved the rating. */
+  readonly ratingContribution: number;
+};
+
+/**
+ * A complete, auditable account of one rating update: the state before and
+ * after, the net change, and a per-game breakdown of why. This is the
+ * "why did my rating change?" answer, computed rather than asserted.
+ */
+export type RatingExplanation = {
+  readonly before: Rating;
+  readonly after: Rating;
+  /** `after.rating - before.rating`, equal to the sum of contributions. */
+  readonly ratingChange: number;
+  readonly games: readonly GameContribution[];
+};
+
+/** Thrown when a rating input is malformed (bad score, negative RD, NaN...). */
+export class RatingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = 'RatingError';
+  }
 }

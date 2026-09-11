@@ -10,16 +10,21 @@ player an explicit **uncertainty** (not just a number), and its every step can
 be read and checked against the paper.
 
 This module is a starting point offered for discussion, not a finished
-standard. The doubles layer in particular makes modelling choices that the
-community should challenge and improve — see [Open questions](#open-questions).
+standard. The doubles layer and the decay policy in particular make modelling
+choices that the community should challenge and improve — see
+[Open questions](#open-questions).
 
 ## What you get
 
 | File | What it is |
 | --- | --- |
-| `glicko2.ts` | The Glicko-2 core: singles ratings, verified against the paper. |
-| `doubles.ts` | A doubles-aware layer that rates individual players from doubles games. |
+| `glicko2.ts` | The Glicko-2 core: `rate`, plus `explainRating` for per-game "why did it change?" breakdowns. Verified against the paper. |
+| `period.ts` | `ratePeriod` — rate a whole field at once, correctly, from everyone's pre-period ratings. |
+| `doubles.ts` | A doubles-aware layer that rates individual players from doubles games, with selectable team strategies. |
+| `utils.ts` | `winProbability`, `confidenceInterval`, `isProvisional` — read-only ways to interpret a rating. |
+| `decay.ts` | Optional, off-by-default inactivity decay toward the mean. |
 | `types.ts` | `Rating`, `GameResult`, `RatingConfig`, and sensible defaults. |
+| `index.ts` | One import for everything: `import { ... } from '@/rating'`. |
 
 No runtime dependencies. Pure functions. Every value in, every value out.
 
@@ -33,34 +38,62 @@ Every player has three numbers:
   is roughly 95% likely to sit within `rating ± 2 × rd`.
 - **volatility** — how erratic their recent results have been.
 
-Because uncertainty is explicit, you can show honest ranges ("1500 ± 150"), and
-new or inactive players are never treated as if their number were reliable.
+Because uncertainty is explicit, you can show honest ranges (`confidenceInterval`)
+and flag players whose number is not yet settled (`isProvisional`).
 
 ## Rating periods, not single games
 
-Glicko-2 is designed to update in **rating periods**, not one game at a time.
-Gather all of a player's games since their last update — the paper recommends
-an average of 10–15 per player — then update once with the whole batch:
+Glicko-2 updates in **rating periods**, not one game at a time, and every
+player in a period is scored from the ratings everyone held at its **start**.
+Getting that wrong (using a rating you already updated mid-period as an
+opponent) quietly corrupts the results, so `ratePeriod` owns the bookkeeping:
+
+```ts
+import { ratePeriod } from '@/rating/period';
+import { newPlayer } from '@/rating/types';
+
+const players = [
+  { id: 'ana', rating: newPlayer() },
+  { id: 'ben', rating: newPlayer() },
+  { id: 'cy', rating: newPlayer() }, // plays no games — still ages
+];
+
+const updated = ratePeriod(players, [
+  { playerA: 'ana', playerB: 'ben', scoreA: 1 },
+]);
+
+updated.get('ana'); // rating up
+updated.get('ben'); // rating down
+updated.get('cy'); // same rating, larger rd (inactivity = more uncertainty)
+```
+
+The result does not depend on the order games are listed.
+
+For a single player you can also call `rate` directly with all their games:
 
 ```ts
 import { rate } from '@/rating/glicko2';
-import { newPlayer } from '@/rating/types';
-
-const player = newPlayer(); // 1500 / 350 / 0.06
-
-const updated = rate(player, [
-  { opponent: { rating: 1400, rd: 30, volatility: 0.06 }, score: 1 },
-  { opponent: { rating: 1550, rd: 100, volatility: 0.06 }, score: 0 },
-  { opponent: { rating: 1700, rd: 300, volatility: 0.06 }, score: 0 },
+const solo = rate(players[0].rating, [
+  { opponent: players[1].rating, score: 1 },
 ]);
-// updated.rating ≈ 1464, updated.rd ≈ 152
 ```
 
-A player who did not compete this period still ages — pass no games and only
-their `rd` grows:
+## Explainability: "why did my rating change?"
+
+The single most-requested feature of any *trusted* rating system is being able
+to see why a number moved. `explainRating` returns the same result as `rate`,
+plus a per-game breakdown whose contributions sum **exactly** to the total
+change:
 
 ```ts
-const rustier = rate(player, []); // same rating, larger rd
+import { explainRating } from '@/rating/glicko2';
+
+const { ratingChange, games } = explainRating(player, results);
+for (const g of games) {
+  // g.expected  — the win probability we predicted
+  // g.score     — what actually happened
+  // g.ratingContribution — display points this one game added/removed
+}
 ```
 
 ## Doubles
@@ -69,7 +102,8 @@ Pickleball is mostly doubles, but a rating belongs to a person, not a pairing.
 The doubles layer handles this with one deliberately simple rule:
 
 1. Each side is collapsed into **one synthetic opponent** — its rating is the
-   mean of the two partners' ratings, its rd the mean of their rds.
+   mean of the two partners' ratings, its rd combined via the chosen strategy
+   (`mean` or `rms`).
 2. Each player is then updated with ordinary Glicko-2, as if they had played
    that synthetic opponent, with the score their team earned.
 
@@ -93,21 +127,28 @@ beating a strong pair lifts the weaker partner more than the stronger one.
 For a real league, prefer accumulating each player's games across the period
 (`doublesResult`) and calling `rate` once, rather than game by game.
 
+## Inactivity decay (optional)
+
+Glicko-2 on its own never moves an idle player's rating — it only grows their
+RD. Some communities want more: a rating that drifts back toward the mean after
+a long layoff, so stale ratings do not squat in rating-gated play. `decay`
+offers that as an explicit, **off-by-default** policy (see `decay.ts`). It is
+not part of canonical Glicko-2 and is a genuine judgement call — hence opt-in.
+
 ## Open questions
 
 These are genuine modelling choices, put here to be argued with — not settled
 truths:
 
-- **Collapsing a team to the mean.** Averaging the partners is the simplest
-  defensible choice. Alternatives worth testing: RMS of the rds, or weighting
-  the stronger player more.
-- **Splitting credit between partners.** Right now both partners take the same
-  result. Should the split reflect who carried the game?
+- **Collapsing a team to one opponent.** `mean` vs `rms` of the RDs are both
+  offered; how to *split credit* between partners (should who carried the game
+  matter?) is still open.
 - **Score margin.** Canonical Glicko-2 only knows win/loss/draw. Should an
   11–2 win move ratings more than an 11–9 win? DUPR does this; it is a real
   design decision with real trade-offs, left out here on purpose.
-- **Rating period length.** Per session, per week, per event? This is an
-  operator choice with a big effect on responsiveness.
+- **Rating period length.** Per session, per week, per event? An operator
+  choice with a big effect on responsiveness.
+- **Decay.** Whether ratings should decay at all, and how fast.
 
 ## Correctness
 
@@ -116,9 +157,11 @@ truths:
 The paper reports a final rating of 1464.06, rd 151.52, volatility 0.05999.
 This code returns 1464.05 / 151.52 / 0.05999 — the small rating difference is
 the paper's hand-rounded intermediate values; the full-precision result here is
-the more accurate one. See `tests/unit/rating.test.ts`.
+the more accurate one.
 
-Run the checks:
+The suite also covers invariants (monotonic in score, RD stays positive,
+order-independence of a period), a multi-period season simulation that sorts
+players into their true skill order, and every helper. Run it:
 
 ```bash
 bun test tests/unit

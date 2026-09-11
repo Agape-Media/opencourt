@@ -8,7 +8,7 @@
  *
  *   1. Each side of a doubles game is collapsed into ONE synthetic opponent
  *      (`teamAsOpponent`). Its rating is the mean of the two partners'
- *      ratings; its RD is the mean of their RDs.
+ *      ratings; its RD depends on the chosen `TeamStrategy`.
  *   2. Every player is then updated with the ordinary Glicko-2 `rate`, as if
  *      they had played that one synthetic opponent, with the score their team
  *      earned.
@@ -18,13 +18,12 @@
  *     changes still differ, because Glicko-2 weights the change by each
  *     player's own rating and RD. Beating a strong pair lifts the weaker
  *     partner more than the stronger one. This is the behaviour we want.
- *   - Averaging the partners is the simplest defensible choice, not the only
- *     one. See "Open questions" in README.md; this layer is meant to be a
- *     starting point the community refines, per the OpenCourt manifesto.
+ *   - How to collapse a team is a genuine choice, so it is a knob, not a
+ *     hidden decision. See `TeamStrategy` and "Open questions" in README.md.
  *
  * As with singles, Glicko-2 works best in rating PERIODS. For a real league,
  * gather each player's synthetic opponents across all their games in the
- * period and call `rate` once (see `doublesResults`), rather than calling
+ * period (via `doublesResult`) and call `rate` once, rather than calling
  * `rateDoublesGame` game by game.
  */
 
@@ -38,6 +37,16 @@ import {
 
 /** A doubles side: exactly two players. */
 export type Team = readonly [Rating, Rating];
+
+/**
+ * How to turn a pair into one synthetic opponent. Both keep the mean rating;
+ * they differ only in how the pair's uncertainty (RD) is combined:
+ *   - `mean` — the arithmetic mean of the two RDs. Simplest.
+ *   - `rms`  — the root-mean-square of the two RDs, always >= `mean` when the
+ *     RDs differ. Treats a pair as slightly more uncertain than either player,
+ *     which makes an uneven pair count a little less as an opponent.
+ */
+export type TeamStrategy = 'mean' | 'rms';
 
 /** A single doubles game between two sides. */
 export type DoublesGame = {
@@ -58,11 +67,18 @@ export type DoublesUpdate = {
  * side is treated as having played. The returned volatility is the partners'
  * mean, but note that an opponent's volatility never affects Glicko-2 math.
  */
-export function teamAsOpponent(team: Team): Rating {
+export function teamAsOpponent(
+  team: Team,
+  strategy: TeamStrategy = 'mean'
+): Rating {
   const [a, b] = team;
+  const rd =
+    strategy === 'rms'
+      ? Math.sqrt((a.rd * a.rd + b.rd * b.rd) / 2)
+      : (a.rd + b.rd) / 2;
   return {
     rating: (a.rating + b.rating) / 2,
-    rd: (a.rd + b.rd) / 2,
+    rd,
     volatility: (a.volatility + b.volatility) / 2,
   };
 }
@@ -72,8 +88,12 @@ export function teamAsOpponent(team: Team): Rating {
  * `rate`: their side's score against the opposing side as a synthetic
  * opponent. Collect these across a period, then call `rate` once.
  */
-export function doublesResult(opposingTeam: Team, score: number): GameResult {
-  return { opponent: teamAsOpponent(opposingTeam), score };
+export function doublesResult(
+  opposingTeam: Team,
+  score: number,
+  strategy: TeamStrategy = 'mean'
+): GameResult {
+  return { opponent: teamAsOpponent(opposingTeam, strategy), score };
 }
 
 /**
@@ -83,12 +103,13 @@ export function doublesResult(opposingTeam: Team, score: number): GameResult {
  */
 export function rateDoublesGame(
   game: DoublesGame,
-  config: RatingConfig = DEFAULT_CONFIG
+  config: RatingConfig = DEFAULT_CONFIG,
+  strategy: TeamStrategy = 'mean'
 ): DoublesUpdate {
   const [a1, a2] = game.teamA;
   const [b1, b2] = game.teamB;
-  const opponentForA = teamAsOpponent(game.teamB);
-  const opponentForB = teamAsOpponent(game.teamA);
+  const opponentForA = teamAsOpponent(game.teamB, strategy);
+  const opponentForB = teamAsOpponent(game.teamA, strategy);
   const scoreB = 1 - game.scoreA;
 
   return {
